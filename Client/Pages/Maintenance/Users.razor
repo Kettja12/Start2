@@ -1,0 +1,171 @@
+﻿@page "/Maintenance/Users"
+@inject AccountService AccountService
+@inject IStringLocalizer<Resource> R
+@inject StateService StateService
+@inject ApiService ApiService
+
+<PageTitle>@R["Users"]</PageTitle>
+<div class="d-flex">
+    <InfoMessage @ref="InfoMessage" />
+    <div class="leftPanel m-2">
+        <h3>@R["Give search conditons"]</h3>
+        <div class="input-group">
+            <div class="form-check m-2">
+                <input type="radio" class="form-check-input" checked name="search"
+                       @onclick=@(() => UserSearchModel.Searchkey="1")>
+                <label class="form-check-label">@R["Username"]</label>
+            </div>
+            <div class="form-check m-2">
+                <input type="radio" class="form-check-input" name="search"
+                       @onclick=@(() => UserSearchModel.Searchkey ="2")>
+                <label class="form-check-label">@R["Last Name"]</label>
+            </div>
+        </div>
+        <div class="input-group m-2">
+            <input type="text" class="form-control" @bind="UserSearchModel.Searchfield">
+            <button class="btn btn-success" type="submit"
+                    disabled=@isBusy @onclick="SearchClick">
+                @R["Search"]
+            </button>
+
+        </div>
+
+        <ul class="list-group m-2">
+            @foreach (var user in UserListItems)
+            {
+                <li @onclick=@(()=> SelectUser(@user.Id)) class="list-group-item">
+                    @user.LastName, @user.FirstName</li>
+            }
+        </ul>
+        @if (isBusy)
+        {
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        }
+    </div>
+    <form class="m-2" autocomplete="off">
+        <button type="button" class="btn btn-primary"
+                @onclick=@(()=> SelectedUser = new User())
+                disabled=@isBusy>
+            @R["Add New User"]
+        </button>
+        <div class="mb-3">
+            <label class="form-label">@R["Username"]</label>
+            <input type="text" class="form-control"
+                   disabled=@(SelectedUser.Id > 0)
+                   @bind="SelectedUser.Username">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">@R["First Name"]</label>
+            <input type="text" class="form-control" @bind="SelectedUser.FirstName">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">@R["Last Name"]</label>
+            <input type="text" class="form-control" @bind="SelectedUser.LastName">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">@R["New password"]</label>
+            <input type="password" class="form-control" autocomplete="new-password" @bind="Password">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">@R["Repeat password"]</label>
+            <input type="password" class="form-control" @bind="PasswordVerification">
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" @bind="IsAdmin">
+            <label class="form-check-label" for="isAdmin">
+                @R["Has admin rights"]
+            </label>
+        </div>
+        <button type="button" class="btn btn-primary" @onclick="SaveUser" 
+            disabled=@isBusy>@R["Save"]</button>
+    </form>
+</div>
+
+@code {
+    public InfoMessage InfoMessage =default!;
+    public UserSearchModel UserSearchModel = new UserSearchModel() { Searchkey = "1" };
+    public List<User> UserListItems = new List<User>();
+    public User SelectedUser { get; set; } = new User();
+    private bool isBusy = false;
+    public string Password = string.Empty;
+    public string PasswordVerification = string.Empty;
+
+    public bool IsAdmin
+    {
+        get
+        {
+            return SelectedUser.Claims != null
+            ? SelectedUser.Claims.IsAdmin()
+            : false;
+        }
+        set
+        {
+            if (SelectedUser.Claims == null)
+                SelectedUser.Claims = new List<Claim>();
+            if (value) SelectedUser.Claims.SetAdmin(SelectedUser.Id);
+            else SelectedUser.Claims.RemoveAdmin();
+        }
+    }
+
+    protected async Task SearchClick()
+    {
+
+        isBusy = true;
+        IsAdmin = false;
+        var account = new AccountController(ApiService, AccountService, StateService);
+        SelectedUser = new User();
+        UserListItems = new List<User>();
+        var userListItems = await account.SearchUserList(UserSearchModel);
+        if (userListItems == null)
+            InfoMessage.Show(false, R[account.Status]);
+        else
+            UserListItems = userListItems;
+        isBusy = false;
+
+    }
+    protected void SelectUser(int id)
+    {
+        if (UserListItems == null
+            || InfoMessage == null
+            || R == null) return;
+
+        var selectedUser = UserListItems.FirstOrDefault(x => x.Id == id);
+        if (selectedUser == null)
+        {
+            InfoMessage.Show(false, R["User selection failed."]);
+            SelectedUser = new User();
+            return;
+        }
+        SelectedUser = selectedUser;
+    }
+
+    protected async Task SaveUser()
+    {
+        if (ApiService == null
+            || AccountService == null
+            || StateService == null
+            || InfoMessage == null
+            || R == null) return;
+
+        isBusy = true;
+        bool insert = SelectedUser.Id == 0;
+        var account = new AccountController(ApiService, AccountService, StateService);
+        var selectedUser = await account
+            .SaveUserAsync(Password, PasswordVerification, SelectedUser);
+        isBusy = false;
+        if (selectedUser != null)
+        {
+            SelectedUser = selectedUser;
+            if (insert)
+                UserListItems.Add(selectedUser);
+        }
+        if (string.IsNullOrEmpty(account.Status) == false)
+        {
+            var r = R.Translate(account.Status);
+            InfoMessage.Show(false, r);
+        }
+
+    }
+}

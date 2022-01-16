@@ -1,0 +1,59 @@
+﻿@page "/Account/Login"
+@inject AccountService AccountService
+@inject ApiService ApiService
+@inject StateService StateService
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<Resource> R
+
+<PageTitle>Login</PageTitle>
+<form>
+    <div class="mb-3">
+        <label for="username" class="form-label">@R["Username"]</label>
+        <input type="text" class="form-control" id="username" @bind="LoginParams.Username" />
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">@R["Password"]</label>
+        <input type="password" class="form-control" id="password" @bind="LoginParams.Password">
+    </div>
+    <button type="button" class="btn btn-primary" @onclick="LoginAsync" disabled=@IsBusy>@R["Login"]</button>
+    @if (IsBusy)
+    {
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    }
+
+    <div class="alert alert-warning" role="alert"
+         style=' display: @(string.IsNullOrEmpty(Error) ? "none" : "block")'>
+        @Error
+    </div>
+</form>
+@code {
+    private LoginModel LoginParams { get; set; } = new LoginModel();
+
+    public string Error = string.Empty;
+    public bool IsBusy;
+
+    private async Task LoginAsync()
+    {
+        if (ApiService != null 
+            && AccountService != null 
+            && NavigationManager != null 
+            && StateService!=null)
+        {
+            IsBusy = true;
+            var account = new AccountController(ApiService, AccountService,StateService);
+            var status = await account.LoginAsync(LoginParams);
+            IsBusy = false;
+            if (string.IsNullOrEmpty(status) == false)
+            {
+                Error = R[status];
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/");
+            }
+        }
+    }
+}
+

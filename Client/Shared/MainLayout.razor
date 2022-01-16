@@ -1,0 +1,71 @@
+﻿@inherits LayoutComponentBase
+@inject AccountService AccountService
+@inject IStringLocalizer<Resource> R
+@inject StateService StateService
+<nav class="navbar navbar-expand navbar-light bg-light" style="min-width:1000px">
+    <ul class="navbar-nav">
+        <li class="nav-item px-3">
+            <a class="nav-link" aria-current="page" href="/">@R["Dashboard"]</a>
+        </li>
+        @if (StateService!=null 
+            && StateService.User!=null 
+            && StateService.User.Claims!=null 
+            && StateService.User.Claims.IsAdmin())
+        {
+            <li class="nav-item px-3 dropdown">
+                <a class="nav-link dropdown-toggle"
+               data-bs-toggle="dropdown" href="#"
+               @onclick="e => this.show = !this.show">
+                    @R["Maintenance"]
+                </a>
+                <ul class="dropdown-menu @(show? "show":"")"  
+                        @onclick="e => this.show = !this.show"
+                        @onmouseover="OutFocus">
+                    <li><a class="dropdown-item" href="/maintenance/users">@R["Users"]</a></li>
+                    <li><a class="dropdown-item" href="#">Link 2</a></li>
+                    <li><a class="dropdown-item" href="#">Link 3</a></li>
+                </ul>
+            </li>
+        }
+    </ul>
+    <ul class="navbar-nav ms-auto">
+        @if (StateService != null)
+        {
+            <li class="nav-item px-3">
+                @if (StateService.User != null)
+                {
+                    <a class="nav-link" aria-current="page"
+               href="" @onclick="(()=> showUserInformation=true)">
+                        @StateService.User.FirstName @StateService.User.LastName
+                    </a>
+                }
+            </li>
+        }
+        <li class="nav-item px-3">
+            <button class="btn" @onclick="AccountService.LogoutAsync">@R["Logout"]</button>
+        </li>
+    </ul>
+</nav>
+@if (showUserInformation)
+{
+    <Start2.Client.Pages.Account.UserInformation CloseDialog="CloseDialog" />
+}
+@Body
+
+@code
+{
+    private Start2.Client.Pages.Account.UserInformation userInformation = default!;
+    private bool showUserInformation = false;
+
+    private bool show = false;
+    private async Task OutFocus()
+    {
+        await Task.Delay(3000);
+        this.show = false;
+    }
+ 
+    private void CloseDialog()
+    {
+        showUserInformation = false;
+    }
+}

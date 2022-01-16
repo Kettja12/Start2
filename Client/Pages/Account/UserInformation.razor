@@ -1,0 +1,76 @@
+﻿@inject AccountService AccountService
+@inject IStringLocalizer<Resource> R
+@inject StateService StateService
+@inject ApiService ApiService
+<div class="modal show" tabindex="-1" role="dialog" style="display:block">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <InfoMessage @ref="InfoMessage" />
+            <div class="modal-header">
+                <h5 class="modal-title"> @R["Basic Information"]</h5>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="username" class="form-label">@R["Username"]</label>
+                        <input type="text" readonly="readonly" class="form-control" id="username" @bind="StateService.User.Username" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="firstName" class="form-label">@R["First Name"]</label>
+                        <input type="text" class="form-control" id="firstName" @bind="StateService.User.FirstName" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="lasName" class="form-label">@R["Last Name"]</label>
+                        <input type="text" class="form-control" id="lasName" @bind="StateService.User.LastName" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="oldPassword" class="form-label">@R["Old password"]</label>
+                        <input type="password" class="form-control" id="oldPassword" @bind="OldPassword">
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">@R["New password"]</label>
+                        <input type="password" class="form-control" id="newPassword" @bind="NewPassword">
+                    </div>
+                    <div class="mb-3">
+                        <label for="repeatPassword" class="form-label">@R["Repeat password"]</label>
+                        <input type="password" class="form-control" id="repeatPassword" @bind="PasswordVerification">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" Disabled="@(isBusy)" @onclick="SaveAsync">@R["Save"]</button>
+                <button type="button" class="btn btn-secondary" Disabled="@(isBusy)" data-dismiss="modal" @onclick="CloseDialog">@R["Close"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="modal-backdrop fade show"></div>
+
+@code {
+    [Parameter]
+    public Action CloseDialog { get; set; } = default!;
+
+    public string? OldPassword;
+    public string? NewPassword;
+    public string? PasswordVerification;
+    private bool isBusy = false;
+
+    public InfoMessage InfoMessage = default!;
+   
+    private async Task SaveAsync()
+    {
+        isBusy = true;
+        var account = new AccountController(ApiService, AccountService, StateService);
+        var status = await account.SaveActiveUserAsync(
+            OldPassword, NewPassword, PasswordVerification);
+        isBusy = false;
+        if (string.IsNullOrEmpty(status) == false)
+        {
+            InfoMessage.Show(false, R[status]);
+        }
+       
+    }
+
+
+}
