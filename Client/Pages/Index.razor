@@ -1,9 +1,45 @@
 ﻿@page "/"
+@inject IStringLocalizer<Resource> R
+@inject StateService StateService
+@inject ApiService ApiService
 
 <PageTitle>Index</PageTitle>
 <h1>Your Dashboard</h1>
-<div>
- 
+<div class="container-fluid d-flex align-content-start flex-wrap" style="background-color:yellow">
+    @foreach (var item in @DashboardItems)
+	{
+		if (item.InUse)
+		{
+			<CascadingValue Value="this" IsFixed="true">
+				<Start2.Client.Pages.Dashboard.DasboardItem Item=item></Start2.Client.Pages.Dashboard.DasboardItem>
+			</CascadingValue>
+		}
+	}
 </div>
- 
+@code {
+    public string Error = string.Empty;
+    public bool IsBusy;
+    public List<DashboardItem> DashboardItems { get; set; } = new List<DashboardItem>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (StateService.Token == null) return;
+        IsBusy = true;
+        var dashboard = new DashboardController(ApiService, StateService);
+        var items = await dashboard.LoadDasboardItemsAsync();
+        IsBusy = false;
+        if (items==null)
+        {
+            Error = R[dashboard.Status];
+        }
+        else
+        {
+            DashboardItems = items;
+        }
+        //SortList = StateContainer.User.DashboardItemsOrder();
+        //await InitDasboardItems();
+        //LoadDasboardItems();
+    }
+
+ }
 

@@ -1,0 +1,21 @@
+﻿<div class="card" style="width: 18rem;">
+    <div class="card-header primary">Header 
+         <button type="button" class="btn btn-labeled btn-success">
+         <span class="btn-label oi oi-reload" title="reaload" aria-hidden="true"></span></button>
+         <button type="button" class="btn btn-success" style="padding-bottom:0.05rem!important;padding-top:0.175rem!important;padding-left:0.5rem;padding-right:0.5rem!important">
+             <i class="bi-x-square" style="font-size: 1.4rem"></i>
+         </button>
+    </div>
+    <div class="card-body">
+        <i class="bi-x-square" style="font-size: 2rem; color: cornflowerblue;"></i>
+        <i class="oi-zoom-in" style="font-size: 2rem; color: cornflowerblue;"></i>
+        <h5 class="card-title">Card title</h5>
+        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+        <a href="#" class="btn btn-primary">Button</a>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Start2.Shared.Model.Dashboard.DashboardItem Item { get; set; }
+}

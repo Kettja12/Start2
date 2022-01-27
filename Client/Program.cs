@@ -8,10 +8,13 @@ using Start2.Client.Services;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
-var apiUrl = builder.Configuration.GetValue<string>("ApiUrl");
+var apiSettings = new ApiServerParameters();
+builder.Configuration.GetSection("ApiServer").Bind(apiSettings);
+builder.Services.AddSingleton<ApiServerParameters>(apiSettings);
+
 builder.Services.AddHttpClient("api", sp =>
 {
-    sp.BaseAddress = new Uri(apiUrl);
+    sp.BaseAddress = new Uri(apiSettings.ApiUrl);
 }).ConfigureHttpClient((client) =>
 {
     client.DefaultRequestVersion = new Version(2, 0);
@@ -23,5 +26,4 @@ builder.Services.AddLocalization();
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationProvider>();
 builder.Services.AddAuthorizationCore();
-
 await builder.Build().RunAsync();

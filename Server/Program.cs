@@ -2,10 +2,40 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Start2.Server.DBContext;
+using Start2.Server.Endponts;
 using Start2.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSwaggerGen(setup =>
+{
+    // Include 'SecurityScheme' to use JWT Authentication
+    var jwtSecurityScheme = new OpenApiSecurityScheme
+    {
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Name = "JWT Authentication",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
+
+        Reference = new OpenApiReference
+        {
+            Id = JwtBearerDefaults.AuthenticationScheme,
+            Type = ReferenceType.SecurityScheme
+        }
+    };
+
+    setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+    setup.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        { jwtSecurityScheme, Array.Empty<string>() }
+    });
+
+});
 
 var connectionString = builder.Configuration["Appsettings:connectionString"];
 
@@ -53,33 +83,26 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddScoped<ApiServices>();
 builder.Services.AddScoped<AccountServices>();
+builder.Services.AddScoped<DashboardServices>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
+app.UseDeveloperExceptionPage();
 
-app.UseExceptionHandler("/Error");
+app.UseSwagger();
+app.UseSwaggerUI();
+//app.UseExceptionHandler("/Error");
 app.UseHsts();
 app.UseCors();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseHttpsRedirection();
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapPost("Account/Login", async (AccountServices services, object postParams) =>
-    {
-        return await services.RunService("Login", postParams);
-    }).AllowAnonymous();
-
-
-    endpoints.MapPost("Account/{service}", async (string service,
-         AccountServices services, object postParams) =>
-    {
-        return await services.RunService(service, postParams);
-    });
-
-    //Endpoints.Map(endpoints);
+    Endpoints.Map(endpoints);
 });
 
 app.Run();

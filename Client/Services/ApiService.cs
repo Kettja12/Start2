@@ -6,10 +6,15 @@ public class ApiService
 {
     private readonly IHttpClientFactory clientFactory;
     private readonly StateService stateService;
-    public ApiService(IHttpClientFactory clientFactory, StateService stateService)
+    private readonly ApiServerParameters parameters;
+
+    public ApiService(IHttpClientFactory clientFactory, 
+        StateService stateService,
+        ApiServerParameters parameters)
     {
         this.clientFactory = clientFactory;
         this.stateService = stateService;
+        this.parameters = parameters;
     }
 
     public async Task<HttpResponseMessage> PostServiceAsync(string service, object dataIn)
@@ -19,7 +24,8 @@ public class ApiService
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + stateService.Token);
         try
         {
-            var response = await client.PostAsJsonAsync(service, dataIn);
+            var response = await client.PostAsJsonAsync(
+                parameters.SubFolder+service, dataIn);
             return response;
         }
         catch (Exception ex)
@@ -30,14 +36,14 @@ public class ApiService
             };
         }
     }
-    public async Task<HttpResponseMessage> GetServiceAsync(string service, string token)
+    public async Task<HttpResponseMessage> GetServiceAsync(string service)
     {
         var client = clientFactory.CreateClient("api");
-        if (token != "")
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+        if (stateService != null && string.IsNullOrEmpty(stateService.Token) == false)
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + stateService.Token);
         try
         {
-            return await client.GetAsync(service);
+            return await client.GetAsync(parameters.SubFolder + service);
         }
         catch (Exception ex)
         {

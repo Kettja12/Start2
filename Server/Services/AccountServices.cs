@@ -18,64 +18,68 @@ public class AccountServices : ApiServices
         StartContext db) : base(configuration, httpContextAccessor, logger, db)
     {
     }
-    public async Task<IResult> RunService(string service, object postParams)
-    {
-        while (true)
-        {
-            if (postParams == null) break;
-            string? p = postParams.ToString();
-            if (p == null) break;
+    //public async Task<IResult> RunService(string service, object postParams)
+    //{
+    //    while (true)
+    //    {
+    //        if (postParams == null) break;
+    //        string? p = postParams.ToString();
+    //        if (p == null) break;
 
-            if (service == "Login")
-            {
-                var s = JsonSerializer.Deserialize<LoginModel>(p, jsonSerializerOptions);
-                if (s == null) break;
-                return await LoginAsync(s);
+    //        if (service == "Login")
+    //        {
+    //            var s = JsonSerializer.Deserialize<LoginModel>(p, jsonSerializerOptions);
+    //            if (s == null) break;
+    //            return await LoginAsync(s);
 
-            }
-            if (service == "GetUsers")
-            {
-                var s = JsonSerializer.Deserialize<UserSearchModel>(p, jsonSerializerOptions);
-                if (s == null) break;
-                return await GetUsersAsync(s);
-            }
+    //        }
+    //        if (service == "GetUsers")
+    //        {
+    //            var s = JsonSerializer.Deserialize<UserSearchModel>(p, jsonSerializerOptions);
+    //            if (s == null) break;
+    //            return await GetUsersAsync(s);
+    //        }
 
-            if (service == "SaveUser")
-            {
-                var s = JsonSerializer.Deserialize<User>(p, jsonSerializerOptions);
-                if (s == null) break;
-                return await SaveUserAsync(s);
-            }
+    //        if (service == "SaveUser")
+    //        {
+    //            var s = JsonSerializer.Deserialize<User>(p, jsonSerializerOptions);
+    //            if (s == null) break;
+    //            return await SaveUserAsync(s);
+    //        }
 
-            if (service == "SavePassword")
-            {
-                var s = JsonSerializer.Deserialize<SavePasswordModel>(p, jsonSerializerOptions);
-                if (s == null) break;
-                return await SavePasswordAsync(s);
-            }
-            if (service == "GetClaims")
-            {
-                var s = JsonSerializer.Deserialize<int>(p, jsonSerializerOptions);
-                return await GetClaimsAsync(s);
-            }
+    //        if (service == "SavePassword")
+    //        {
+    //            var s = JsonSerializer.Deserialize<SavePasswordModel>(p, jsonSerializerOptions);
+    //            if (s == null) break;
+    //            return await SavePasswordAsync(s);
+    //        }
+    //        if (service == "GetClaims")
+    //        {
+    //            var s = JsonSerializer.Deserialize<int>(p, jsonSerializerOptions);
+    //            return await GetClaimsAsync(s);
+    //        }
 
-            if (service == "SaveClaims")
-            {
-                var s = JsonSerializer.Deserialize<UserClaimsModel>(p, jsonSerializerOptions);
-                if (s == null) break;
-                return await SaveClaimsAsync(s);
-            }
+    //        if (service == "SaveClaims")
+    //        {
+    //            var s = JsonSerializer.Deserialize<UserClaimsModel>(p, jsonSerializerOptions);
+    //            if (s == null) break;
+    //            return await SaveClaimsAsync(s);
+    //        }
 
-        }
-        return InvalidParameters();
-    }
+    //    }
+    //    return InvalidParameters();
+    //}
     public async Task<IResult> LoginAsync(LoginModel postParams)
     {
         try
         {
             while (true)
             {
-                if (string.IsNullOrEmpty(postParams.Username)) break;
+                if (
+                    string.IsNullOrEmpty(postParams.Username)
+                    || string.IsNullOrEmpty(postParams.Password)
+                    ) break;
+
                 User? user = await db.GetUserByUsernameAsync(postParams.Username);
                 if (user == null) break;
                 List<Claim>? claims = await db.GetClaimsByUserIdAsync(user.Id);

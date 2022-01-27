@@ -13,11 +13,11 @@ public class APIServices
         AccountSaveClaims = "/Account/SaveClaims",
         AccountSaveUser = "/Account/SaveUser",
         AccountSavePassword = "/Account/SavePassword",
-        ReservationGetReservationNodes="/Reservation/GetReservationNodes",
-        ReservationSaveReservationNode="/Reservation/SaveReservationNode",
-        SystemTest="/System/Test",
-        SystemGetSettings="/System/GetSettings",
-        SystemSaveSetting="/System/SaveSetting";
+        ReservationGetReservationNodes= "/Reservation/GetReservationNodes",
+        ReservationSaveReservationNode= "/Reservation/SaveReservationNode",
+        SystemTest= "/System/Test",
+        SystemGetSettings= "/System/GetSettings",
+        SystemSaveSetting= "/System/SaveSetting";
 
 
 }
