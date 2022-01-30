@@ -1,4 +1,5 @@
 ﻿using Start2.Server.DBContext;
+using Start2.Shared;
 using Start2.Shared.Model.Dashboard;
 using System.Text.Json;
 
@@ -14,72 +15,87 @@ namespace Start2.Server.Services
             StartContext db) : base(configuration, httpContextAccessor, logger, db)
         {
         }
-
-        public async Task<IResult> RunService(string service, object postParams)
+        public async Task<IResult> GetItem1Async(Item1 postParams)
         {
-            while (true)
+            try
             {
-
-                if (service == "GetDashboardItems")
+                await Task.Delay(5000);
+                //if (postParams.Data == null)
+                //{
+                //    var claims = await db.GetClaimsByUserIdAsync(UserId);
+                //    postParams.Data = claims.GetClaim("Item1Params");
+                //}
+                //else
+                //{
+                //    var claims = await db.GetClaimsByUserIdAsync(UserId);
+                //    claims.SetClaim("Item1Params", postParams.Data);
+                //    _ = await db.SaveClaimsByUserIdAsync(claims,UserId);
+                //}
+                postParams.Renevue = new double[4];
+                postParams.Renevue2 = new double[4];
+                Random rnd = new Random();
+                for (var i = 0; i < 4; i++)
                 {
-                    return await GetDashboardItemsAsync();
-
+                    postParams.Renevue[i] = rnd.Next(10000, 30000);
+                    postParams.Renevue2[i] = rnd.Next(10000, 30000);
                 }
-
-                if (postParams == null) break;
-                string? p = postParams.ToString();
-                if (p == null) break;
-
-                if (service == "SaveDashboardItem")
-                {
-                    var s = JsonSerializer.Deserialize<DashboardItem>(p, jsonSerializerOptions);
-                    if (s == null) break;
-                    return await SaveDashboardItemAsync(s);
-                }
-
-                if (service == "GetItem1")
-                {
-                    var s = JsonSerializer.Deserialize<Item1>(p, jsonSerializerOptions);
-                    if (s == null) break;
-                    return await GetItem1Async(s);
-                }
-
-                if (service == "GetItem2")
-                {
-                    var s = JsonSerializer.Deserialize<Item2>(p, jsonSerializerOptions);
-                    if (s == null) break;
-                    return await GetItem2Async(s);
-                }
-                if (service == "GetItem3")
-                {
-                    var s = JsonSerializer.Deserialize<Item3>(p, jsonSerializerOptions);
-                    return await GetItem3Async(s);
-                }
+                return Results.Ok(postParams);
             }
-            return InvalidParameters();
+            catch (Exception e)
+            {
+                logger.LogError("Error: ", e);
+            }
+            return Results.Conflict("Item1 search failed.");
         }
 
-        private Task<IResult> GetItem3Async(Item3? s)
+        public async Task<IResult> GetItem2Async(Item2 postParams)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await Task.Delay(2000);
+                if (postParams.Data == null)
+                {
+                    var claims = await db.GetClaimsByUserIdAsync(UserId);
+                    postParams.Data = claims.GetClaim("Item1Params");
+                }
+                else
+                {
+                    var claims = await db.GetClaimsByUserIdAsync(UserId);
+                    claims.SetClaim("Item1Params", postParams.Data);
+                    _ = await db.SaveClaimsByUserIdAsync(claims, UserId);
+                }
+
+                return Results.Ok(postParams);
+            }
+            catch (Exception e)
+            {
+                logger.LogError("Error: ", e);
+            }
+            return Results.Conflict("Item2 search failed.");
         }
 
-        private Task<IResult> GetItem2Async(Item2 s)
+        public async Task<IResult> GetItem3Async(Item3 postParams)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await Task.Delay(3000);
+                postParams.Result = (int.Parse(postParams.A) + int.Parse(postParams.B)).ToString(); 
+                return Results.Ok(postParams);
+            }
+            catch (Exception e)
+            {
+                logger.LogError("Error: ", e);
+            }
+            return Results.Conflict("Item3 search failed.");
         }
 
-        private Task<IResult> GetItem1Async(Item1 s)
-        {
-            throw new NotImplementedException();
-        }
 
         private Task<IResult> SaveDashboardItemAsync(DashboardItem s)
         {
             throw new NotImplementedException();
         }
 
-        private async Task<IResult> GetDashboardItemsAsync()
+        public async Task<IResult> GetDashboardItemsAsync()
         {
 
             try

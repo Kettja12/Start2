@@ -1,0 +1,115 @@
+﻿@inject IStringLocalizer<Resource> R
+@inject StateService StateService
+@inject AccountService AccountService
+@inject ApiService ApiService
+@using System.Globalization
+<InfoMessage @ref="InfoMessage" />
+@if (Refresh)
+{
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+}
+
+else
+{
+
+    <RadzenChart SeriesClick=@OnSeriesClick>
+        <RadzenBarSeries Data="@Revenue1" CategoryProperty="Quarter" Title="2020" LineType="LineType.Dashed" ValueProperty="Revenue" />
+        <RadzenBarSeries Data="@Revenue2" CategoryProperty="Quarter" Title="2019" ValueProperty="Revenue" />
+        <RadzenValueAxis Formatter="@FormatAsUSD">
+            <RadzenGridLines Visible="true" />
+            <RadzenAxisTitle Text="Revenue" />
+        </RadzenValueAxis>
+        <RadzenBarOptions Radius="5" />
+    </RadzenChart>
+
+@*
+    <form Model="@Content">
+        <input type="text" class="form-control" id="username" @bind="Content" />
+    </form>*@
+
+}
+@code {
+    [CascadingParameter] DashboardItem Container { get; set; }
+    [Parameter] public bool Refresh { get; set; }
+    private string Content { get; set; }
+    private DataItem[] Revenue1; 
+    private DataItem[] Revenue2; 
+    public InfoMessage InfoMessage { get; set; }
+
+    public bool operationOK = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+        // if (Container.Item.Refresh == false) return;
+        // Container.Item.Refresh = false;
+        await LoadDasboardItem();
+
+    }
+    protected async Task LoadDasboardItem()
+    {
+        try
+        {
+            Refresh = true;
+            Start2.Shared.Model.Dashboard.Item1 paramsIn = new();
+            if (Content != null)
+                paramsIn.Data = Content;
+            var response = await ApiService.PostServiceAsync(
+                APIServices.DashboardGetItem1,
+                paramsIn);
+            Refresh = false;
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var result = await response.Content.ReadFromJsonAsync<
+                Start2.Shared.Model.Dashboard.Item1>();
+                Revenue1 = new DataItem[4];
+                Revenue2 = new DataItem[4];
+                for (int i = 0; i < 4; i++)
+                {
+                    Revenue1[i] = new DataItem() {
+                        Quarter = "Q" + (i + 1).ToString(),Revenue=result.Renevue[i]};
+                    Revenue2[i] = new DataItem() { 
+                        Quarter = "Q" + (i + 1).ToString(),Revenue=result.Renevue2[i]};
+                }
+                return;
+            }
+            var s = response.Content.ReadAsStringAsync().Result;
+            if (string.IsNullOrEmpty(s))
+                s = "Service call failed.";
+            InfoMessage.Show(false, R[s]);
+            return;
+        }
+        catch (Exception e)
+        {
+            Refresh = false;
+            InfoMessage.Show(false, R["Service call failed."]);
+        }
+
+    }
+
+    void OnSeriesClick(SeriesClickEventArgs args)
+    {
+    }
+
+    class DataItem
+    {
+        public string Quarter { get; set; }
+        public double Revenue { get; set; }
+    }
+
+    string FormatAsUSD(object value)
+    {
+        return ((double)value).ToString();
+    }
+
+}
+
+
+
+
+
+
+
+

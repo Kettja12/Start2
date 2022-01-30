@@ -197,6 +197,32 @@ namespace Start2.Client.Controllers
 
         }
 
+        public async Task<string> SaveActiveUserAsync()
+        {
+            try
+            {
+                if (stateService.User == null)
+                {
+                    return "No user information to save.";
+
+                }
+                var response = await apiService.PostServiceAsync(
+                APIServices.AccountSaveUser, stateService.User);
+                var firstResult = await response.Content.ReadFromJsonAsync<User>();
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    return "User save success.";
+                }
+                var s = response.Content.ReadAsStringAsync().Result;
+                if (string.IsNullOrEmpty(s) == false)
+                    return s;
+                return "User save failed.";
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
 
 
     }

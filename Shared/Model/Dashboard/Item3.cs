@@ -8,7 +8,9 @@ namespace Start2.Shared.Model.Dashboard
 {
     public class Item3
     {
-        public string? Data { get; set; }
+        public string? A { get; set; }
+        public string? B { get; set; }
+        public string? Result { get; set; }
 
     }
 }

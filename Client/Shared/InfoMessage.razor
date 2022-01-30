@@ -1,6 +1,6 @@
 ﻿@if (!string.IsNullOrEmpty(Value))
 {
-    <div Style="position:absolute;z-index:9999;width:100%"
+    <div Style="position:absolute;z-index:9999;width:@Width"
          class="alert alert-warning" role="alert">
         @Value
     </div>
@@ -8,6 +8,12 @@
 @code {
     private string Value = string.Empty;
     private bool operationOK = true;
+    private string Width = "100%";
+    public async void Show(bool ok, string? value,string width)
+    {
+        Width = width;
+        Show(ok, value);
+    }
     public async void Show(bool ok, string? value)
     {
         if (value == null) return;

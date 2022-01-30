@@ -9,6 +9,8 @@ namespace Start2.Shared.Model.Dashboard
     public class Item1
     {
         public string? Data { get; set; }
+        public double[] Renevue { get; set; }
+        public double[] Renevue2 { get; set; }
 
     }
 }

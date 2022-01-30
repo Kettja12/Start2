@@ -5,7 +5,7 @@ public partial class Endpoints
     {
         UserApi.Map(endpoints);
         //SystemApi.Map(endpoints);
-        //DashboardApi.Map(endpoints);
+        DashboardApi.Map(endpoints);
         //ReservationApi.Map(endpoints);
     }
 

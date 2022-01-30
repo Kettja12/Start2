@@ -1,0 +1,72 @@
+﻿@inject IStringLocalizer<Resource> R
+@inject StateService StateService
+@inject AccountService AccountService
+@inject ApiService ApiService
+
+<InfoMessage @ref="InfoMessage" />
+@if (Refresh)
+{
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+}
+
+else
+{
+    <input type="text" class="form-control" @bind="ParamsIn.A" />
+    <input type="text" class="form-control" @bind="ParamsIn.B" />
+    <input type="text" class="form-control" @bind="ParamsIn.Result" />
+}
+@code {
+    [CascadingParameter] DashboardItem Container { get; set; }
+    [Parameter] public bool Refresh { get; set; }
+    private Start2.Shared.Model.Dashboard.Item3 ParamsIn { get; set; } = new();
+    public InfoMessage InfoMessage { get; set; }
+    public bool operationOK = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+        // if (Container.Item.Refresh == false) return;
+        // Container.Item.Refresh = false;
+        await LoadDasboardItem();
+
+    }
+    protected async Task LoadDasboardItem()
+    {
+        try
+        {
+            Refresh = true;
+            var response = await ApiService.PostServiceAsync(
+                APIServices.DashboardGetItem3,
+                ParamsIn);
+            Refresh = false;
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var result = await response.Content
+                .ReadFromJsonAsync<Start2.Shared.Model.Dashboard.Item3>();
+                ParamsIn = result;
+                return;
+            }
+            var s = response.Content.ReadAsStringAsync().Result;
+            if (string.IsNullOrEmpty(s))
+                s = "Service call failed.";
+            InfoMessage.Show(false, R[s],"90%");
+            return;
+        }
+        catch (Exception e)
+        {
+            Refresh = false;
+            InfoMessage.Show(false, R["Service call failed."]);
+        }
+
+    }
+}
+
+
+
+
+
+
+
+

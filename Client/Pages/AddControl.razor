@@ -1,0 +1,36 @@
+﻿@inject AccountService AccountService
+@inject IStringLocalizer<Resource> R
+@inject StateService StateService
+@inject ApiService ApiService
+<div class="modal show" tabindex="-1" role="dialog" style="display:block">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"> @R["Add unselected control to screen"]</h5>
+            </div>
+            <div class="modal-body">
+                  <ul class="list-group m-2">
+            @foreach (var item in DisabledItems)
+            {
+                <li @onclick=@(()=> CloseDialog.InvokeAsync(@item.Id)) class="list-group-item">
+                    @R[@item.Control]</li>
+            }
+        </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" 
+                @onclick="()=>CloseDialog.InvokeAsync(0)">@R["Close"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="modal-backdrop fade show"></div>
+
+@code {
+    [Parameter]
+    public EventCallback<int> CloseDialog { get; set; } = default!;
+    [Parameter]
+    public List<DashboardItem> DisabledItems { get; set; }
+
+}
