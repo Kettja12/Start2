@@ -79,6 +79,7 @@ namespace Start2.Server.Services
             try
             {
                 await Task.Delay(3000);
+                if (postParams.A==null || postParams.B==null ) return Results.Ok(postParams);
                 postParams.Result = (int.Parse(postParams.A) + int.Parse(postParams.B)).ToString(); 
                 return Results.Ok(postParams);
             }
@@ -86,7 +87,7 @@ namespace Start2.Server.Services
             {
                 logger.LogError("Error: ", e);
             }
-            return Results.Conflict("Item3 search failed.");
+            return Results.Conflict("Item3 call failed. Invalid parameters.");
         }
 
 
