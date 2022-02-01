@@ -1,0 +1,29 @@
+﻿@page "/Reservation"
+<div class="content">
+    <div class="panel panel-default">
+        <button id="selectRooms" class="btn btn-primary"
+                @onclick="@ShowSelectRooms">
+            valitse tilat
+        </button>
+        <CascadingValue Value="this">
+            <SelectRooms @ref="SelectRooms" />
+        </CascadingValue>
+        <CascadingValue Value="this">
+            <ReservationCalendars @ref="ReservationCalendars" />
+        </CascadingValue>
+    </div>
+</div>
+@code {
+      public SelectRooms SelectRooms { get; set; }
+      private ReservationCalendars ReservationCalendars { get; set; }
+      
+      protected async Task ShowSelectRooms()
+        {
+            await SelectRooms.ShowSelectRooms();
+        }
+
+        public async Task LoadCalendars()
+        {
+            //await ReservationCalendars.LoadCalendars();
+        }
+}

@@ -1,0 +1,134 @@
+﻿<div class="datacontent">
+    <table>
+        <thead>
+            <tr>
+                @foreach (var item in Header)
+                {
+                    <th class="titlecol">
+                        <label>@item</label>
+                    </th>
+                }
+            </tr>
+        </thead>
+        @*
+            <tr id="roomcolTemplate">
+                <th class="titlecol roomcol">@</th>
+            </tr>
+
+            <tr id="headerItemTemplate">
+                <th class="titlecol">@</th>
+            </tr>*@
+        @foreach (var item in ReservationRows)
+        {
+            <tr>
+                <td class="titlecol">
+                    <label>@item.Roomkey.RoomID</label>
+                </td>
+                @foreach (var res in item.DayStates)
+                {
+                    <td class="titlecol @res.CssClass" 
+                        @onclick="()=>SelectCel(res)">
+                        <label></label>
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+</div>
+
+
+@code {
+    public record DayState(string CssClass,DateTime day,int RoomId, int ReservationId);
+    public class ReservationRow
+    {
+        public SelectRooms.RoomKey Roomkey { get; set; }
+        public List<DayState> DayStates { get; set; }
+    }
+
+//        [Inject] StateContainer StateContainer { get; set; }
+//        [Inject] ApiService ApiService { get; set; }
+
+        [CascadingParameter]
+        public Reservation Reservation { get; set; }
+        private List<ReservationRow> ReservationRows = new();
+        private List<string> Header = new();
+
+        public async Task LoadCalendars()
+        {
+
+            Header = new List<string>();
+            Header.Add("Tila");
+            var datestart = Reservation.SelectRooms.ResDateStart;
+            var dateEnd = Reservation.SelectRooms.ResDateEnd;
+            var indexdate = datestart;
+            while (indexdate <= dateEnd)
+            {
+                Header.Add(indexdate.Day.ToString());
+                indexdate = indexdate.AddDays(1);
+            }
+            var reservations=await GetReservations();
+            ReservationRows = new List<ReservationRow>();
+            foreach (var item in Reservation.SelectRooms.RoomKeys)
+            {
+                if (item.IsChecked)
+                {
+                    var dayStates = new List<DayState>();
+                    var s = new ReservationRow() { Roomkey = item,DayStates= dayStates };
+                    indexdate = datestart;
+                    var reservationRowitems = reservations.Where(x => x.RoomId == item.Id).ToList();
+                    while (indexdate <= dateEnd)
+                    {
+                        var reserved = reservationRowitems.Where(x => x.ReservationDate == indexdate).FirstOrDefault();
+                        if (reserved != null)
+                        {
+
+                            dayStates.Add(new DayState("reserved",indexdate,item.Id,reserved.Id));
+                        }
+                        else
+                        {
+                            dayStates.Add(new DayState("free", indexdate, item.Id, 0));
+                        }
+                        indexdate = indexdate.AddDays(1);
+                    }
+                    ReservationRows.Add(s);
+                }
+            }
+            StateHasChanged();
+        }
+
+        public async Task<List<Start2.Shared.Model.Reservation.Reservation>> GetReservations()
+        {
+            try
+            {
+                var reservationFilter = new ReservationFilter()
+                {
+                      ReservationDateStart = Reservation.SelectRooms.ResDateStart,
+                      ReservationDateEnd=  Reservation.SelectRooms.ResDateEnd
+                };
+                //var data = JsonSerializer.Serialize(reservationFilter);
+
+                //var paramsin = new ParametersIn(StateContainer.Token, "GetReservations", data);
+                //var response = await ApiService.CallServiceAsync(paramsin);
+                //if (response.Status == "FAIL")
+                //{
+                //    Reservation.Mainlayout.InfoMessage.Show("alert-primary", response.Data);
+                //    return null;
+                //}
+                //var result = JsonSerializer.Deserialize<List<Entities.Reservation>>(response.Data);
+                //return result;
+                return null;
+            }
+            catch (Exception e)
+            {
+                //Reservation.Mainlayout.InfoMessage.Show("alert-primary", e.Message);
+                return null;
+            }
+
+        }
+
+        public async Task SelectCel(DayState dayState)
+        {
+        }
+
+
+}

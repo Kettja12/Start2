@@ -1,0 +1,116 @@
+﻿<div id="selectRoomsDiv" class="modal" style=@show>
+    <div class="modal-dialog" style="width:500px">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h3 class="modal-title">Valitse tilat</h3>
+                <button type="button" @onclick="@CloseSelectRooms" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            </header>
+            <div class="modal-body">
+                <label>aikaväli</label>
+                <div>
+                    <input type="date" @bind="@ResDateStart" />
+                    <input type="date" @bind="@ResDateEnd" />
+                </div>
+                <div>
+                    <input type="checkbox" @bind="@SelectAll"
+                           @onclick="() => CheckAll()"
+                           class="w3-check" />
+                    <label>Kaikki tilat</label>
+                </div>
+                <div id="roomlist" class="" style="height:100px;overflow-y:auto;">
+                    @foreach (var item in RoomKeys)
+                    {
+                        <div>
+                            <div class="">
+                                <input type="checkbox" @bind="item.IsChecked"
+                                   class="" />
+                                <label>@item.RoomID</label>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary"
+                        @onclick="@LoadCalendars">
+                    valitse
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public Reservation Reservation { get; set; }
+
+
+    String show;
+    public DateTime ResDateStart { get; set; } = DateTime.Today;
+    public DateTime ResDateEnd { get; set; } = DateTime.Today.AddDays(30);
+    public bool SelectAll { get; set; }
+
+    public class RoomKey
+    {
+        public int Id { get; set; }
+        public string RoomID { get; set; }
+        public bool IsChecked { get; set; }
+    };
+    public List<RoomKey> RoomKeys { get; set; } = new();
+
+    public async Task ShowSelectRooms()
+    {
+        show = "display: block;";
+        if (RoomKeys.Any() == false)
+        {
+            RoomKeys = await GetRoomKeys();
+        }
+    }
+    protected void CloseSelectRooms()
+    {
+        show = "display: hidden;";
+    }
+
+    public async Task<List<RoomKey>> GetRoomKeys()
+    {
+        try
+        {
+            //    var paramsin = new ParametersIn(StateContainer.Token, "GetRooms", "");
+            //    var response = await ApiService.CallServiceAsync(paramsin);
+            //    if (response.Status == "FAIL")
+            //    {
+            //        Reservation.Mainlayout.InfoMessage.Show("alert-primary", response.Data);
+            //        CloseSelectRooms();
+            //    }
+            //    var result = JsonSerializer.Deserialize<List<RoomKey>>(response.Data);
+            //    return result;
+            return new List<RoomKey>() { new RoomKey() { Id = 1, IsChecked = false, RoomID = "001" } };
+        }
+        catch (Exception e)
+        {
+            CloseSelectRooms();
+            //Reservation.Mainlayout.InfoMessage.Show("alert-primary", e.Message);
+            return new List<RoomKey>();
+        }
+
+    }
+
+    void CheckAll()
+    {
+        foreach (var item in RoomKeys)
+        {
+            item.IsChecked = !SelectAll;
+        }
+    }
+    async Task LoadCalendars()
+    {
+        CloseSelectRooms();
+
+        await Reservation.LoadCalendars();
+    }
+
+}
+
+
