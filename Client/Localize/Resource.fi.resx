@@ -429,4 +429,7 @@
   <data name="Token is valid." xml:space="preserve">
     <value>Tunnistautumisavain hyväksytty.</value>
   </data>
+  <data name="Reservation" xml:space="preserve">
+    <value>Varauskalenteri</value>
+  </data>
 </root>
