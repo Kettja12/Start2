@@ -1,0 +1,111 @@
+﻿@page "/Maintenance/ReservationNodes"
+@inject AccountService AccountService
+@inject IStringLocalizer<Resource> R
+@inject StateService StateService
+@inject ApiService ApiService
+
+<PageTitle>@R["ReservationNodes"]</PageTitle>
+<div class="d-flex">
+    <InfoMessage @ref="InfoMessage" />
+    <div class="leftPanel m-2">
+          <ul class="list-group m-2">
+            @foreach (var node in ReservationNodeList)
+            {
+                <li @onclick=@(()=> SelectNode(@node.Id)) class="list-group-item">
+                    @node.Name</li>
+            }
+        </ul>
+    </div>
+        <form class="m-2" autocomplete="off">
+        <button type="button" class="btn btn-primary"
+                @onclick=@(()=> SelectedNode = new ReservationNode())
+                disabled=@isBusy>
+            @R["Add new reservationnode"]
+        </button>
+        <div class="mb-3">
+            <label class="form-label">@R["Name"]</label>
+            <input type="text" class="form-control"
+                   @bind="SelectedNode.Name">
+        </div>
+        <button type="button" class="btn btn-primary" @onclick="SaveNode" 
+            disabled=@isBusy>@R["Save"]</button>
+    </form>
+
+</div>
+
+@code {
+    public InfoMessage InfoMessage =default!;
+    public string Error = string.Empty;
+    public bool isBusy;
+    public List<ReservationNode> ReservationNodeList { get; set; } = new List<ReservationNode>();
+    public ReservationNode SelectedNode { get; set; } = new ReservationNode();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (StateService.Token == null) return;
+        await InitReservationNodes();
+    }
+
+    protected async Task<bool> InitReservationNodes()
+    {
+        if (StateService.Token == null) return false;
+        isBusy = true;
+        var reservation = new ReservationController(ApiService, StateService);
+        var items = await reservation.LoadReservationNodesAsync();
+        isBusy = false;
+        if (items == null)
+        {
+            Error = R[reservation.Status];
+        }
+        else
+        {
+            ReservationNodeList = items;
+            return true;
+        }
+        return false;
+    }
+
+    protected void SelectNode(int id)
+    {
+        if (ReservationNodeList == null
+            || InfoMessage == null
+            || R == null) return;
+
+        var selectedNode = ReservationNodeList.FirstOrDefault(x => x.Id == id);
+        if (selectedNode == null)
+        {
+            InfoMessage.Show(false, R["Node selection failed."]);
+            SelectedNode = new ReservationNode();
+            return;
+        }
+        SelectedNode = selectedNode;
+    }
+    
+    protected async Task SaveNode()
+    {
+        if (ApiService == null
+            || StateService == null
+            || InfoMessage == null
+            || R == null) return;
+
+        isBusy = true;
+        bool insert = SelectedNode.Id == 0;
+        var reservation = new ReservationController(ApiService, StateService);
+        var selectedNode = await reservation
+            .SaveReservationNodeAsync(SelectedNode);
+        isBusy = false;
+        if (selectedNode != null)
+        {
+            SelectedNode = selectedNode;
+            if (insert)
+                ReservationNodeList.Add(selectedNode);
+        }
+        if (string.IsNullOrEmpty(reservation.Status) == false)
+        {
+            var r = R.Translate(reservation.Status);
+            InfoMessage.Show(false, r);
+        }
+
+    }
+
+}

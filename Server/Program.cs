@@ -84,6 +84,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<ApiServices>();
 builder.Services.AddScoped<AccountServices>();
 builder.Services.AddScoped<DashboardServices>();
+builder.Services.AddScoped<ReservationServices>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddEndpointsApiExplorer();
 

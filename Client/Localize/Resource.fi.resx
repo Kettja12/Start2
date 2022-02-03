@@ -399,17 +399,17 @@
   <data name="Password save success." xml:space="preserve">
     <value>Salasanan tallennus onnistui.</value>
   </data>
-  <data name="Reservationnode save failed." xml:space="preserve">
-    <value>Varaussolmun tallennus epäonnistui.</value>
+  <data name="Reservation node save failed." xml:space="preserve">
+    <value>Varauyksikön tallennus epäonnistui.</value>
   </data>
-  <data name="Reservationnode save success." xml:space="preserve">
-    <value>Varaussolmun tallennus onnistui.</value>
+  <data name="Reservation node save success." xml:space="preserve">
+    <value>Varausyksikön tallennus onnistui.</value>
   </data>
-  <data name="Reservationnodes search failed." xml:space="preserve">
+  <data name="Reservation nodes search failed." xml:space="preserve">
     <value>Varaussolmujen haku epäonnistui.</value>
   </data>
-  <data name="Reservationnodes search success" xml:space="preserve">
-    <value>Varaussolmujen haku onnistui.</value>
+  <data name="Reservation nodes search success" xml:space="preserve">
+    <value>Varausyksikäuden haku onnistui.</value>
   </data>
   <data name="Setting save fail." xml:space="preserve">
     <value>Asetuksen tallennus epäonnistui.</value>
@@ -431,5 +431,11 @@
   </data>
   <data name="Reservation" xml:space="preserve">
     <value>Varauskalenteri</value>
+  </data>
+  <data name="Add new reservationnode" xml:space="preserve">
+    <value>Lisää uusi varausyksikkö</value>
+  </data>
+  <data name="ReservationNodes" xml:space="preserve">
+    <value>Varausyksiköt</value>
   </data>
 </root>
