@@ -1,157 +1,55 @@
 ﻿@page "/"
-@inject IStringLocalizer<Resource> R
-@inject StateService StateService
-@inject AccountService AccountService
-@inject ApiService ApiService
 
-<PageTitle>Index</PageTitle>
-<div class="container-fluid d-flex align-content-start flex-wrap"
-     style="height:100%" 
-     @oncontextmenu="AddHiddenControlsAsync" @oncontextmenu:preventDefault="true">
-    <InfoMessage @ref="InfoMessage" />
-    @foreach (var item in @UserDashboardItems)
-    {
-        if (item.InUse)
-        {
-            <CascadingValue Value="this" IsFixed="true">
-                <Start2.Client.Pages.Dashboard.DasboardItem Item=item></Start2.Client.Pages.Dashboard.DasboardItem>
-            </CascadingValue>
-        }
-    }
-    @if (ShowAddControlsDialog)
-    {
-        <AddControl CloseDialog="CloseDialog" DisabledItems="DisabledItems"></AddControl>
-    }
+<PageTitle>Start2</PageTitle>
+<div class="container">
+
+    <h3>Are You sure where you are?</h3>
+
+    <h2>Start2 application</h2>
+    <p>
+        Start2 is <a href="https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor" target="blank"> Blazor Web Application</a>. Application purpose is just demo and test Blazor platform.
+        Minimal dominator and purpose whole projet is test <a href="https://www.youtube.com/watch?v=Y2a16HAsHBE" target="blank"> Asp Net Core  6 </a> and  try to solve blazor maturity
+        and suitability to real use.
+        WebApp uses <a href="https://www.hanselman.com/blog/exploring-a-minimal-web-api-with-aspnet-core-6" target="blank">Minimal Web Api</a> for data services.
+        Data is stored in MS Sql Server 2019 Express. Api uses by Entity Framework Core 6 to get data.
+        Deployment platform for all is IIS.
+    <p>
+        Start2 Webapp is published as normal static site where index.html is loaded to browser  and client side app loads and starts.
+        Api is normal web application site.
+    </p>
+    <p>
+        Static IP is provided  by
+        <a href="https://www.noip.com/" target="blank"> No-IP</a>	No-IP offers kindly one free https. Https is provided by
+        <a href="https://trustcor.com/dv-certificates.php" target="blank">TrustoCor</a>.
+    </p>
+    </p>
+    <h3>WebApp</h3>
+    <p>
+        Site is not up all time. Only when I test something typically 17:00-22:00 Finnish time. 
+        Because you see this, You are app running in your browser now.
+        You can login with following information username: Jari Password: Jari
+    </p>
+    <h3>Api</h3>
+
+    <p>
+        The Api test starts with the following link: <a href="https://jarikettunen.ddns.net/api/swagger" target="blank"> start2 Api</a> Use login service same parameters Use username: Test Password: Test
+       When install IIS server as subfolder in webapp-site then rewrite must be reconfigured. Following configuration works.
+        <a href="./data/web.config.txt" target="_blank">
+       <img src="./data/rewrite.png" />
+       </a>
+    </p>
+    <p>
+        You also can use Postman To get started, you can use the following file <a href="./data/Start2_postman_collection.json" target="blank">Postman collection</a>
+    </p>
+    <h3>GitHub</h3>
+    <p>
+        All codes can be found on Github at the following address <a href="https://github.com/Kettja12/Start2" target="blank">https://github.com/Kettja12/Start2 </a>
+    </p>
+    <h3>Development tools</h3>
+    <p>
+        As you can expect I use Visual Studio 2022 for coding. I use free community version. You can load it from link:   <a href="https://visualstudio.microsoft.com/vs/community/" target="blank">https://visualstudio.microsoft.com/vs/community/</a>
+    </p>
 </div>
 @code {
-    public InfoMessage InfoMessage =default!;
-    public string Error = string.Empty;
-    public bool IsBusy;
-    public List<DashboardItem> DashboardItems { get; set; } = new List<DashboardItem>();
-    public List<DashboardItem> UserDashboardItems { get; set; } = new List<DashboardItem>();
-    public List<DashboardItem> DisabledItems { get; set; } = new List<DashboardItem>();
-    public List<int> SortList { get; set;}
-    private bool ShowAddControlsDialog = false;
-    public int CurrentIndex { get; set; }
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (StateService.Token == null) return;
-        if (await InitDasboardItems())
-        {
-            SortList = StateService.User.DashboardItemsOrder();
-            await LoadDasboardItems();
-        }
-    }
-
-    protected async Task<bool> InitDasboardItems()
-    {
-        if (StateService.Token == null) return false;
-        IsBusy = true;
-        var dashboard = new DashboardController(ApiService, StateService);
-        var items = await dashboard.LoadDasboardItemsAsync();
-        IsBusy = false;
-        if (items == null)
-        {
-            Error = R[dashboard.Status];
-        }
-        else
-        {
-            DashboardItems = items;
-            return true;
-        }
-        return false;
-    }
-
-
-
-    public async Task RemoveControlAsync(int id)
-    {
-        SortList.Remove(id);
-        StateService.User.DashboardItemsOrder(SortList);
-        var account = new AccountController(ApiService, AccountService, StateService);
-        var status = await account.SaveActiveUserAsync();
-        await LoadDasboardItems();
-        StateHasChanged();
-    }
-    protected async Task LoadDasboardItems()
-    {
-        var userDashboardItems = new List<DashboardItem>();
-        DisabledItems = DashboardItems
-            .Where(x => x.InUse == true).ToList();
-        foreach (var control in SortList)
-        {
-            foreach (var item in DashboardItems)
-            {
-                if (item.Id == control)
-                {
-                    DisabledItems.Remove(item);
-                    userDashboardItems.Add(item);
-                }
-            }
-        }
-        UserDashboardItems = userDashboardItems;
-    }
-    public async Task AddHiddenControlsAsync()
-    {
-        if (DisabledItems.Count==0) return;
-        ShowAddControlsDialog = true;
-    }
-    private async Task CloseDialog(int id)
-    {
-        ShowAddControlsDialog = false;
-        if (id == 0) return;
-        SortList.Add(id);
-        StateService.User.DashboardItemsOrder(SortList);
-        var account = new AccountController(ApiService, AccountService, StateService);
-        var status = await account.SaveActiveUserAsync();
-        await LoadDasboardItems();
-    }
-       public async Task MoveControlAsync(int id)
-        {
-            //_isOpen = false;
-            var dragItemIndex = SortList.IndexOf(CurrentIndex);
-            var dropItemIndex = SortList.IndexOf(id);
-            var newSortList = new List<int>();
-            for (int i = 0; i < SortList.Count; i++)
-            {
-                if (dragItemIndex > dropItemIndex)
-                {
-                    if (SortList[i] == id)
-                    {
-                        newSortList.Add(CurrentIndex);
-
-                    }
-                    if (SortList[i] != CurrentIndex)
-                    {
-                        newSortList.Add(SortList[i]);
-                    }
-                }
-                else
-                {
-                    if (SortList[i] != CurrentIndex)
-                    {
-                        newSortList.Add(SortList[i]);
-                    }
-
-                    if (SortList[i] == id)
-                    {
-                        newSortList.Add(CurrentIndex);
-
-                    }
-                }
-            }
-            StateService.User.DashboardItemsOrder(newSortList);
-            var account = new AccountController(ApiService, AccountService, StateService);
-            var status = await account.SaveActiveUserAsync();
-            SortList = newSortList;
-            UserDashboardItems= new List<DashboardItem>();
-            StateHasChanged();
-            await LoadDasboardItems();
-            StateHasChanged();
-        
-        }
-
  }
 

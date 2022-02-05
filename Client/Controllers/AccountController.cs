@@ -1,4 +1,5 @@
-﻿using Start2.Client.Services;
+﻿using Blazored.LocalStorage;
+using Start2.Client.Services;
 using Start2.Shared;
 using Start2.Shared.Model;
 using Start2.Shared.Model.Account;
@@ -12,6 +13,7 @@ namespace Start2.Client.Controllers
         private readonly ApiService apiService;
         private readonly AccountService accountService;
         private readonly StateService stateService;
+     
         public string Status = string.Empty;
 
         public AccountController(ApiService apiService,
@@ -211,7 +213,9 @@ namespace Start2.Client.Controllers
                 var firstResult = await response.Content.ReadFromJsonAsync<User>();
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
+                    await accountService.UpdateState();
                     return "User save success.";
+
                 }
                 var s = response.Content.ReadAsStringAsync().Result;
                 if (string.IsNullOrEmpty(s) == false)

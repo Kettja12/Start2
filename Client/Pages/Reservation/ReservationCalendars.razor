@@ -49,7 +49,7 @@
 //        [Inject] ApiService ApiService { get; set; }
 
         [CascadingParameter]
-        public Reservation Reservation { get; set; }
+        public Start2.Client.Pages.Reservation.Index Reservation { get; set; }
         private List<ReservationRow> ReservationRows = new();
         private List<string> Header = new();
 
@@ -96,7 +96,7 @@
             StateHasChanged();
         }
 
-        public async Task<List<Start2.Shared.Model.Reservation.Reservation>> GetReservations()
+        public async Task<List<Reservation>> GetReservations()
         {
             try
             {
@@ -116,12 +116,12 @@
                 //}
                 //var result = JsonSerializer.Deserialize<List<Entities.Reservation>>(response.Data);
                 //return result;
-                return null;
+                return new List<Reservation>();
             }
             catch (Exception e)
             {
                 //Reservation.Mainlayout.InfoMessage.Show("alert-primary", e.Message);
-                return null;
+                return new List<Reservation>();
             }
 
         }

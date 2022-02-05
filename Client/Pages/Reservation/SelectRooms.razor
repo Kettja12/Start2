@@ -1,4 +1,9 @@
-﻿<div id="selectRoomsDiv" class="modal" style=@show>
+﻿@inject AccountService AccountService
+@inject IStringLocalizer<Resource> R
+@inject StateService StateService
+@inject ApiService ApiService
+
+<div id="selectRoomsDiv" class="modal" style=@show>
     <div class="modal-dialog" style="width:500px">
         <div class="modal-content">
             <header class="modal-header">
@@ -44,13 +49,15 @@
 
 @code {
     [CascadingParameter]
-    public Reservation Reservation { get; set; }
-
+    public Start2.Client.Pages.Reservation.Index Reservation { get; set; }
 
     String show;
     public DateTime ResDateStart { get; set; } = DateTime.Today;
     public DateTime ResDateEnd { get; set; } = DateTime.Today.AddDays(30);
     public bool SelectAll { get; set; }
+    public List<ReservationNode> ReservationNodeList { get; set; } = new List<ReservationNode>();
+    public string Error = string.Empty;
+    public bool isBusy;
 
     public class RoomKey
     {
@@ -65,7 +72,7 @@
         show = "display: block;";
         if (RoomKeys.Any() == false)
         {
-            RoomKeys = await GetRoomKeys();
+            await GetRoomKeys();
         }
     }
     protected void CloseSelectRooms()
@@ -73,26 +80,38 @@
         show = "display: hidden;";
     }
 
-    public async Task<List<RoomKey>> GetRoomKeys()
+    public async Task<bool> GetRoomKeys()
     {
         try
         {
-            //    var paramsin = new ParametersIn(StateContainer.Token, "GetRooms", "");
-            //    var response = await ApiService.CallServiceAsync(paramsin);
-            //    if (response.Status == "FAIL")
-            //    {
-            //        Reservation.Mainlayout.InfoMessage.Show("alert-primary", response.Data);
-            //        CloseSelectRooms();
-            //    }
-            //    var result = JsonSerializer.Deserialize<List<RoomKey>>(response.Data);
-            //    return result;
-            return new List<RoomKey>() { new RoomKey() { Id = 1, IsChecked = false, RoomID = "001" } };
+            if (StateService.Token == null) return false;
+            isBusy = true;
+            var reservation = new ReservationController(ApiService, StateService);
+            List<ReservationNode> items = await reservation.LoadReservationNodesAsync();
+            isBusy = false;
+            if (items == null)
+            {
+                Error = R[reservation.Status];
+            }
+            else
+            {
+                RoomKeys = new List<RoomKey>();
+                foreach (var item in items)
+                {
+                    RoomKeys.Add(new RoomKey() { Id = item.Id, RoomID = item.Name });    
+                }
+                ReservationNodeList = items;
+                return true;
+            }
+            return false;
+
+
         }
         catch (Exception e)
         {
             CloseSelectRooms();
             //Reservation.Mainlayout.InfoMessage.Show("alert-primary", e.Message);
-            return new List<RoomKey>();
+            return false;
         }
 
     }

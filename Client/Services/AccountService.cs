@@ -37,6 +37,10 @@ namespace Start2.Client.Services
             
             return true;
         }
+        public async Task UpdateState()
+        {
+            await localStorageService.SetItemAsync("stateService", stateService);
+        }
 
         public async Task<bool> LogoutAsync()
         {
