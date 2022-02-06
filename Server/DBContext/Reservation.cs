@@ -11,7 +11,25 @@ namespace Start2.Server.DBContext
             return reservationNodes;
         }
 
+        public async Task<List<Reservation>> GetReservationsAsync()
+        {
+            List<Reservation>? reservations = await Reservations.ToListAsync();
+            return reservations;
+        }
+
         public async Task<ReservationNode> SaveReservationNodeAsync(ReservationNode node)
+        {
+
+            if (node != null)
+            {
+                Entry(node).State = EntityState.Detached;
+            }
+            Entry(node).State = node.Id == 0 ? EntityState.Added : EntityState.Modified;
+            await SaveChangesAsync();
+            return node;
+        }
+
+        public async Task<Reservation> SaveReservationAsync(Reservation node)
         {
 
             if (node != null)

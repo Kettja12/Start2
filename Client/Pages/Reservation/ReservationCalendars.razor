@@ -1,4 +1,13 @@
-﻿<div class="datacontent">
+﻿@inject AccountService AccountService
+@inject IStringLocalizer<Resource> R
+@inject StateService StateService
+@inject ApiService ApiService
+
+<div class="datacontent">
+    <CascadingValue Value="this">
+        <AddModifyReservation @ref="CurrentReservation" />
+    </CascadingValue>
+
     <table>
         <thead>
             <tr>
@@ -12,22 +21,22 @@
         </thead>
         @*
             <tr id="roomcolTemplate">
-                <th class="titlecol roomcol">@</th>
+            <th class="titlecol roomcol">@</th>
             </tr>
 
             <tr id="headerItemTemplate">
-                <th class="titlecol">@</th>
+            <th class="titlecol">@</th>
             </tr>*@
         @foreach (var item in ReservationRows)
         {
             <tr>
                 <td class="titlecol">
-                    <label>@item.Roomkey.RoomID</label>
+                    <label>@item.RoomKey.RoomID</label>
                 </td>
                 @foreach (var res in item.DayStates)
                 {
-                    <td class="titlecol @res.CssClass" 
-                        @onclick="()=>SelectCel(res)">
+                    <td class="titlecol @res.cssClass"
+                @onclick="()=>SelectCel(res)">
                         <label></label>
                     </td>
                 }
@@ -38,97 +47,173 @@
 
 
 @code {
-    public record DayState(string CssClass,DateTime day,int RoomId, int ReservationId);
+    public record DayState(string cssClass, Reservation reservation);
+    private AddModifyReservation CurrentReservation { get; set; }
+    public string Error = string.Empty;
+    public bool isBusy;
     public class ReservationRow
     {
-        public SelectRooms.RoomKey Roomkey { get; set; }
+        public SelectRooms.RoomKey RoomKey { get; set; }
         public List<DayState> DayStates { get; set; }
     }
 
-//        [Inject] StateContainer StateContainer { get; set; }
-//        [Inject] ApiService ApiService { get; set; }
+    //        [Inject] StateContainer StateContainer { get; set; }
+    //        [Inject] ApiService ApiService { get; set; }
 
-        [CascadingParameter]
-        public Start2.Client.Pages.Reservation.Index Reservation { get; set; }
-        private List<ReservationRow> ReservationRows = new();
-        private List<string> Header = new();
+    [CascadingParameter]
+    public Start2.Client.Pages.Reservation.Index ReservationPage { get; set; }
+    private List<ReservationRow> ReservationRows = new();
+    private List<Reservation> ReservationList { get; set; }
+    private List<string> Header = new();
+    DayState currentDayState { get; set; }
 
-        public async Task LoadCalendars()
+    public async Task LoadCalendars()
+    {
+
+        Header = new List<string>();
+        Header.Add("Tila");
+        DateTime datestart = ReservationPage.SelectRooms.ResDateStart;
+        DateTime dateEnd = ReservationPage.SelectRooms.ResDateEnd;
+        var indexdate = datestart;
+        while (indexdate <= dateEnd)
         {
-
-            Header = new List<string>();
-            Header.Add("Tila");
-            var datestart = Reservation.SelectRooms.ResDateStart;
-            var dateEnd = Reservation.SelectRooms.ResDateEnd;
-            var indexdate = datestart;
-            while (indexdate <= dateEnd)
+            Header.Add(indexdate.Day.ToString());
+            indexdate = indexdate.AddDays(1);
+        }
+        ReservationList = await GetReservations();
+        ReservationRows = new List<ReservationRow>();
+        foreach (SelectRooms.RoomKey item in ReservationPage.SelectRooms.RoomKeys)
+        {
+            if (item.IsChecked)
             {
-                Header.Add(indexdate.Day.ToString());
-                indexdate = indexdate.AddDays(1);
+                List<Reservation> reservationRowitems = ReservationList.Where(x => x.ReservationNodeId == item.Id).ToList();
+                var s = setReservationRow(datestart,dateEnd,item,reservationRowitems);
+                ReservationRows.Add(s);
             }
-            var reservations=await GetReservations();
-            ReservationRows = new List<ReservationRow>();
-            foreach (var item in Reservation.SelectRooms.RoomKeys)
+        }
+        StateHasChanged();
+    }
+    public ReservationRow setReservationRow(
+        DateTime datestart,
+        DateTime dateEnd,
+        SelectRooms.RoomKey item,
+        List<Reservation> reservationRowitems)
+    {
+        var dayStates = new List<DayState>();
+        var s = new ReservationRow() { RoomKey = item, DayStates = dayStates };
+        DateTime indexdate = datestart;
+        while (indexdate <= dateEnd)
+        {
+            var isSet = false;
+            foreach (var r in reservationRowitems)
             {
-                if (item.IsChecked)
+                if (r.ReservationStartDate <= indexdate
+                    && r.ReservationEndDate >= indexdate)
                 {
-                    var dayStates = new List<DayState>();
-                    var s = new ReservationRow() { Roomkey = item,DayStates= dayStates };
-                    indexdate = datestart;
-                    var reservationRowitems = reservations.Where(x => x.RoomId == item.Id).ToList();
-                    while (indexdate <= dateEnd)
-                    {
-                        var reserved = reservationRowitems.Where(x => x.ReservationDate == indexdate).FirstOrDefault();
-                        if (reserved != null)
-                        {
-
-                            dayStates.Add(new DayState("reserved",indexdate,item.Id,reserved.Id));
-                        }
-                        else
-                        {
-                            dayStates.Add(new DayState("free", indexdate, item.Id, 0));
-                        }
-                        indexdate = indexdate.AddDays(1);
-                    }
-                    ReservationRows.Add(s);
+                    dayStates.Add(new DayState("reserved", r));
+                    isSet = true;
+                    break;
                 }
             }
-            StateHasChanged();
-        }
-
-        public async Task<List<Reservation>> GetReservations()
-        {
-            try
+            if (isSet == false)
             {
-                var reservationFilter = new ReservationFilter()
-                {
-                      ReservationDateStart = Reservation.SelectRooms.ResDateStart,
-                      ReservationDateEnd=  Reservation.SelectRooms.ResDateEnd
-                };
-                //var data = JsonSerializer.Serialize(reservationFilter);
+                dayStates.Add(new DayState("free", new Reservation()
+                    {
+                        ReservationNodeId = item.Id,
+                        ReservationStartDate = indexdate,
+                        ReservationEndDate = indexdate
+                    }
+                ));
 
-                //var paramsin = new ParametersIn(StateContainer.Token, "GetReservations", data);
-                //var response = await ApiService.CallServiceAsync(paramsin);
-                //if (response.Status == "FAIL")
-                //{
-                //    Reservation.Mainlayout.InfoMessage.Show("alert-primary", response.Data);
-                //    return null;
-                //}
-                //var result = JsonSerializer.Deserialize<List<Entities.Reservation>>(response.Data);
-                //return result;
-                return new List<Reservation>();
             }
-            catch (Exception e)
-            {
-                //Reservation.Mainlayout.InfoMessage.Show("alert-primary", e.Message);
-                return new List<Reservation>();
-            }
-
+            indexdate = indexdate.AddDays(1);
         }
-
-        public async Task SelectCel(DayState dayState)
+        return s;
+    }
+    public async Task<List<Reservation>> GetReservations()
+    {
+        try
         {
+            //var reservationFilter = new ReservationFilter()
+            //    {
+            //        ReservationDateStart = Reservation.SelectRooms.ResDateStart,
+            //        ReservationDateEnd = Reservation.SelectRooms.ResDateEnd
+            //    };
+
+            if (StateService.Token == null) return new List<Reservation>();
+            isBusy = true;
+            var reservation = new ReservationController(ApiService, StateService);
+            List<Reservation> items = await reservation.LoadReservationAsync();
+            isBusy = false;
+            if (items == null)
+            {
+                Error = R[reservation.Status];
+            }
+            else
+            {
+                return items;
+            }
+            return new List<Reservation>();
+        }
+        catch (Exception e)
+        {
+            //Reservation.Mainlayout.InfoMessage.Show("alert-primary", e.Message);
+            return new List<Reservation>();
         }
 
+    }
+
+    public async Task SelectCel(DayState dayState)
+    {
+        currentDayState = dayState;
+        await CurrentReservation.ShowReservaation(dayState.reservation);
+    }
+
+    public async Task SetCel(Reservation currentReservation)
+    {
+        foreach(var item in ReservationRows)
+        {
+            if (item.RoomKey.Id == currentDayState.reservation.ReservationNodeId)
+            {
+                await SaveReservation(currentReservation);
+                List<Reservation> reservationRowitems = 
+                    ReservationList.Where(x => x.ReservationNodeId == item.RoomKey.Id).ToList();
+                DateTime datestart = ReservationPage.SelectRooms.ResDateStart;
+                DateTime dateEnd = ReservationPage.SelectRooms.ResDateEnd;
+                var s = setReservationRow(datestart,dateEnd,item.RoomKey,reservationRowitems);
+                item.DayStates = s.DayStates;
+                StateHasChanged();
+                break;
+            }
+        }
+
+    }
+
+    protected async Task<Reservation> SaveReservation(Reservation reservation)
+    {
+        if (ApiService == null
+            || StateService == null
+            //|| InfoMessage == null
+            || R == null) return null;
+
+        isBusy = true;
+        bool insert = reservation.Id == 0;
+        var controller = new ReservationController(ApiService, StateService);
+        reservation = await controller
+            .SaveReservationAsync(reservation);
+        isBusy = false;
+        if (reservation != null)
+        {
+            if (insert)
+                ReservationList.Add(reservation);
+        }
+        if (string.IsNullOrEmpty(controller.Status) == false)
+        {
+            var r = R.Translate(controller.Status);
+            //InfoMessage.Show(false, r);
+        }
+        return reservation;
+
+    }
 
 }

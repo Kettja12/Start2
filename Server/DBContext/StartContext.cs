@@ -16,5 +16,6 @@ public partial class StartContext : DbContext
     public DbSet<LoginToken> LoginTokens => Set<LoginToken>();
     public DbSet<DashboardItem> DashboardItems => Set<DashboardItem>();
     public DbSet<ReservationNode> ReservationNodes => Set<ReservationNode>();
+    public DbSet<Reservation> Reservations => Set<Reservation>();
 
 }

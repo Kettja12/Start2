@@ -11,15 +11,30 @@ public static class ReservationApi
 
         _ = endpoints.MapGet(APIServices.ReservationGetReservationNodes,
             async (ReservationServices services) =>
-         {
-             return await services.GetReservationNodesAsync();
-        });
+            {
+                return await services.GetReservationNodesAsync();
+            });
 
         _ = endpoints.MapPost(APIServices.ReservationSaveReservationNode,
             async (ReservationServices services, ReservationNode postParams) =>
-        {
-            if (postParams == null) return services.InvalidParameters();
-            return await services.SaveReservationNodeAsync(postParams);
-        });
+            {
+                if (postParams == null) return services.InvalidParameters();
+                return await services.SaveReservationNodeAsync(postParams);
+            });
+
+        _ = endpoints.MapGet(APIServices.ReservationGetReservations,
+            async (ReservationServices services) =>
+            {
+                return await services.GetReservationAsync();
+            });
+
+        _ = endpoints.MapPost(APIServices.ReservationSaveReservation,
+            async (ReservationServices services, Reservation postParams) =>
+            {
+                if (postParams == null) return services.InvalidParameters();
+                return await services.SaveReservationAsync(postParams);
+            });
+
+
     }
 }

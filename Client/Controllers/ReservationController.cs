@@ -47,8 +47,35 @@ namespace Start2.Client.Controllers
             Status = "ServiceCall Failed.";
             return null;
         }
+        public async Task<List<Reservation>?> LoadReservationAsync()
+        {
+            try
+            {
 
-        public async Task<ReservationNode> SaveReservationNodeAsync(ReservationNode node)
+                var response = await apiService.GetServiceAsync(APIServices.ReservationGetReservations);
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var r = await response.Content.ReadFromJsonAsync<List<Reservation>>();
+                    if (r != null)
+                    {
+                        return r;
+                    }
+
+                }
+                var s = response.Content.ReadAsStringAsync().Result;
+                if (string.IsNullOrEmpty(s) == false)
+                    Status = s;
+                return null;
+            }
+            catch (Exception e)
+            {
+                Status = e.Message;
+            }
+            Status = "ServiceCall Failed.";
+            return null;
+        }
+
+        public async Task<ReservationNode?> SaveReservationNodeAsync(ReservationNode node)
         {
             try
             {
@@ -72,6 +99,29 @@ namespace Start2.Client.Controllers
             return null;
         }
 
+        public async Task<Reservation?> SaveReservationAsync(Reservation node)
+        {
+            try
+            {
+                var response = await apiService.PostServiceAsync(
+                APIServices.ReservationSaveReservation, node);
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    Reservation result = await response.Content.ReadFromJsonAsync<Reservation>();
+                    Status = "Reservation node save success.";
+                    return result;
+                }
+                Status = "Reservation node save failed.";
+                var s = response.Content.ReadAsStringAsync().Result;
+                if (string.IsNullOrEmpty(s) == false)
+                    Status = s;
+            }
+            catch (Exception e)
+            {
+                Status = e.Message;
+            }
+            return null;
+        }
 
 
     }

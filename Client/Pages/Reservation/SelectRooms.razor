@@ -7,12 +7,12 @@
     <div class="modal-dialog" style="width:500px">
         <div class="modal-content">
             <header class="modal-header">
-                <h3 class="modal-title">Valitse tilat</h3>
+                <h3 class="modal-title">@R["Select rooms"]</h3>
                 <button type="button" @onclick="@CloseSelectRooms" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
             </header>
             <div class="modal-body">
-                <label>aikaväli</label>
+                <label>@R["Timespan"]</label>
                 <div>
                     <input type="date" @bind="@ResDateStart" />
                     <input type="date" @bind="@ResDateEnd" />

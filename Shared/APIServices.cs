@@ -15,7 +15,9 @@ public class APIServices
         AccountSavePassword = "/Account/SavePassword",
         ReservationGetReservationNodes= "/Reservation/GetReservationNodes",
         ReservationSaveReservationNode= "/Reservation/SaveReservationNode",
-        SystemTest= "/System/Test",
+        ReservationGetReservations = "/Reservation/GetReservations",
+        ReservationSaveReservation = "/Reservation/SaveReservation",
+        SystemTest = "/System/Test",
         SystemGetSettings= "/System/GetSettings",
         SystemSaveSetting= "/System/SaveSetting";
 

@@ -1,0 +1,65 @@
+﻿@using static Start2.Client.Pages.Reservation.ReservationCalendars
+@inject AccountService AccountService
+@inject IStringLocalizer<Resource> R
+@inject StateService StateService
+@inject ApiService ApiService
+
+<div id="selectRoomsDiv" class="modal" style=@show>
+    <div class="modal-dialog" style="width:500px">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h3 class="modal-title">@R["Modify reservation"]</h3>
+                <button type="button" @onclick="@CloseAddModifyReservation" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            </header>
+            <div class="modal-body">
+                <label>@R["Timespan"]</label>
+                <div>
+                    <input type="date" @bind="@reservation.ReservationStartDate" />
+                    -
+                    <input type="date" @bind="@reservation.ReservationEndDate" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">@R["Name"]</label>
+                    <input type="text" class="form-control"
+                           @bind="reservation.ReservationTag">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary"
+                        @onclick="@SaveReservation">
+                    @R["Save"]
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public Start2.Client.Pages.Reservation.ReservationCalendars ReservationCalendars { get; set; }
+    String show;
+    public string Error = string.Empty;
+    public bool isBusy;
+    private Reservation reservation { get; set; } = new Reservation();
+
+    public async Task ShowReservaation(Reservation reservation)
+    {
+        this.reservation = reservation;
+        show = "display: block;";
+    }
+    protected void CloseAddModifyReservation()
+    {
+        show = "display: hidden;";
+    }
+
+    async Task SaveReservation()
+    {
+        CloseAddModifyReservation();
+
+        await ReservationCalendars.SetCel(reservation);
+    }
+
+}
+
+

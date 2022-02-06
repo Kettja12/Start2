@@ -1,0 +1,157 @@
+﻿@page "/dashboard"
+@inject IStringLocalizer<Resource> R
+@inject StateService StateService
+@inject AccountService AccountService
+@inject ApiService ApiService
+
+<PageTitle>Index</PageTitle>
+<div class="container-fluid d-flex align-content-start flex-wrap"
+     style="height:100%" 
+     @oncontextmenu="AddHiddenControlsAsync" @oncontextmenu:preventDefault="true">
+    <InfoMessage @ref="InfoMessage" />
+    @foreach (var item in @UserDashboardItems)
+    {
+        if (item.InUse)
+        {
+            <CascadingValue Value="this" IsFixed="true">
+                <Start2.Client.Pages.Dashboard.DasboardItem Item=item></Start2.Client.Pages.Dashboard.DasboardItem>
+            </CascadingValue>
+        }
+    }
+    @if (ShowAddControlsDialog)
+    {
+        <AddControl CloseDialog="CloseDialog" DisabledItems="DisabledItems"></AddControl>
+    }
+</div>
+@code {
+    public InfoMessage InfoMessage =default!;
+    public string Error = string.Empty;
+    public bool IsBusy;
+    public List<DashboardItem> DashboardItems { get; set; } = new List<DashboardItem>();
+    public List<DashboardItem> UserDashboardItems { get; set; } = new List<DashboardItem>();
+    public List<DashboardItem> DisabledItems { get; set; } = new List<DashboardItem>();
+    public List<int> SortList { get; set;}
+    private bool ShowAddControlsDialog = false;
+    public int CurrentIndex { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (StateService.Token == null) return;
+        if (await InitDasboardItems())
+        {
+            SortList = StateService.User.DashboardItemsOrder();
+            await LoadDasboardItems();
+        }
+    }
+
+    protected async Task<bool> InitDasboardItems()
+    {
+        if (StateService.Token == null) return false;
+        IsBusy = true;
+        var dashboard = new DashboardController(ApiService, StateService);
+        var items = await dashboard.LoadDasboardItemsAsync();
+        IsBusy = false;
+        if (items == null)
+        {
+            Error = R[dashboard.Status];
+        }
+        else
+        {
+            DashboardItems = items;
+            return true;
+        }
+        return false;
+    }
+
+
+
+    public async Task RemoveControlAsync(int id)
+    {
+        SortList.Remove(id);
+        StateService.User.DashboardItemsOrder(SortList);
+        var account = new AccountController(ApiService, AccountService, StateService);
+        var status = await account.SaveActiveUserAsync();
+        await LoadDasboardItems();
+        StateHasChanged();
+    }
+    protected async Task LoadDasboardItems()
+    {
+        var userDashboardItems = new List<DashboardItem>();
+        DisabledItems = DashboardItems
+            .Where(x => x.InUse == true).ToList();
+        foreach (var control in SortList)
+        {
+            foreach (var item in DashboardItems)
+            {
+                if (item.Id == control)
+                {
+                    DisabledItems.Remove(item);
+                    userDashboardItems.Add(item);
+                }
+            }
+        }
+        UserDashboardItems = userDashboardItems;
+    }
+    public async Task AddHiddenControlsAsync()
+    {
+        if (DisabledItems.Count==0) return;
+        ShowAddControlsDialog = true;
+    }
+    private async Task CloseDialog(int id)
+    {
+        ShowAddControlsDialog = false;
+        if (id == 0) return;
+        SortList.Add(id);
+        StateService.User.DashboardItemsOrder(SortList);
+        var account = new AccountController(ApiService, AccountService, StateService);
+        var status = await account.SaveActiveUserAsync();
+        await LoadDasboardItems();
+    }
+       public async Task MoveControlAsync(int id)
+        {
+            //_isOpen = false;
+            var dragItemIndex = SortList.IndexOf(CurrentIndex);
+            var dropItemIndex = SortList.IndexOf(id);
+            var newSortList = new List<int>();
+            for (int i = 0; i < SortList.Count; i++)
+            {
+                if (dragItemIndex > dropItemIndex)
+                {
+                    if (SortList[i] == id)
+                    {
+                        newSortList.Add(CurrentIndex);
+
+                    }
+                    if (SortList[i] != CurrentIndex)
+                    {
+                        newSortList.Add(SortList[i]);
+                    }
+                }
+                else
+                {
+                    if (SortList[i] != CurrentIndex)
+                    {
+                        newSortList.Add(SortList[i]);
+                    }
+
+                    if (SortList[i] == id)
+                    {
+                        newSortList.Add(CurrentIndex);
+
+                    }
+                }
+            }
+            StateService.User.DashboardItemsOrder(newSortList);
+            var account = new AccountController(ApiService, AccountService, StateService);
+            var status = await account.SaveActiveUserAsync();
+            SortList = newSortList;
+            UserDashboardItems= new List<DashboardItem>();
+            StateHasChanged();
+            await LoadDasboardItems();
+            StateHasChanged();
+        
+        }
+
+ }
+
