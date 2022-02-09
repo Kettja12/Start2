@@ -228,6 +228,35 @@ namespace Start2.Client.Controllers
             }
         }
 
+        public async Task<string> SaveActiveClaimsAsync()
+        {
+            try
+            {
+                if (stateService.Claims == null)
+                {
+                    return "No claims information to save.";
+
+                }
+                var response = await apiService.PostServiceAsync(
+                APIServices.AccountSaveClaims, stateService.Claims);
+                var firstResult = await response.Content.ReadFromJsonAsync<List<Claim>>();
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    await accountService.UpdateState();
+                    return "Claims save success.";
+
+                }
+                var s = response.Content.ReadAsStringAsync().Result;
+                if (string.IsNullOrEmpty(s) == false)
+                    return s;
+                return "Claims save failed.";
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
 
     }
 }

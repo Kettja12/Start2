@@ -4,9 +4,9 @@ using Start2.Shared;
 using Start2.Shared.Model.Reservation;
 
 namespace Start2.Server.Endponts;
-public static class ReservationApi
+public static partial class Endpoints
 {
-    public static void Map(IEndpointRouteBuilder endpoints)
+    public static void MapReservationApi(IEndpointRouteBuilder endpoints)
     {
 
         _ = endpoints.MapGet(APIServices.ReservationGetReservationNodes,
@@ -18,7 +18,7 @@ public static class ReservationApi
         _ = endpoints.MapPost(APIServices.ReservationSaveReservationNode,
             async (ReservationServices services, ReservationNode postParams) =>
             {
-                if (postParams == null) return services.InvalidParameters();
+                if (CheckObject(postParams) == false) return services.UnacceptedContent();
                 return await services.SaveReservationNodeAsync(postParams);
             });
 
@@ -31,7 +31,7 @@ public static class ReservationApi
         _ = endpoints.MapPost(APIServices.ReservationSaveReservation,
             async (ReservationServices services, Reservation postParams) =>
             {
-                if (postParams == null) return services.InvalidParameters();
+                if (CheckObject(postParams) == false) return services.UnacceptedContent();
                 return await services.SaveReservationAsync(postParams);
             });
 

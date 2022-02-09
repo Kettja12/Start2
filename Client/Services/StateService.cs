@@ -8,6 +8,8 @@ public class StateService
     public bool IsLoaded { get { return User != null; } }
     public User? User { get; set; }
 
+    public List<Claim>? Claims { get; set; }
+
     public void Logout()
     {
         User = null;

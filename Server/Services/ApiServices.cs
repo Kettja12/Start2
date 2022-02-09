@@ -65,6 +65,12 @@ namespace Start2.Server.Services
             return Results.Conflict("No data.");
         }
 
+        public IResult UnacceptedContent()
+        {
+            return Results.Conflict("Unaccepted Content.");
+        }
+
+
         public IResult InvalidParameters()
         {
             return Results.Conflict("Invalid parameters.");

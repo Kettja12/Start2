@@ -88,6 +88,7 @@
     public UserSearchModel UserSearchModel = new UserSearchModel() { Searchkey = "1" };
     public List<User> UserListItems = new List<User>();
     public User SelectedUser { get; set; } = new User();
+    public List<Claim> SelectedUserClaims { get; set; } = new List<Claim>();
     private bool isBusy = false;
     public string Password = string.Empty;
     public string PasswordVerification = string.Empty;
@@ -96,16 +97,16 @@
     {
         get
         {
-            return SelectedUser.Claims != null
-            ? SelectedUser.Claims.IsAdmin()
+            return SelectedUserClaims != null
+            ? SelectedUserClaims.IsAdmin()
             : false;
         }
         set
         {
-            if (SelectedUser.Claims == null)
-                SelectedUser.Claims = new List<Claim>();
-            if (value) SelectedUser.Claims.SetAdmin(SelectedUser.Id);
-            else SelectedUser.Claims.RemoveAdmin();
+            if (SelectedUserClaims == null)
+                SelectedUserClaims = new List<Claim>();
+            if (value) SelectedUserClaims.SetAdmin(SelectedUser.Id);
+            else SelectedUserClaims.RemoveAdmin();
         }
     }
 

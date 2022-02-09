@@ -47,13 +47,13 @@ public static class ClientExtensions
         }
         return result;
     }
-    public static List<int> DashboardItemsOrder(this User user)
+    public static List<int> DashboardItemsOrder(this List<Claim> claims)
     {
 
-        if (user.Claims != null)
+        if (claims != null)
         {
 
-            foreach (var item in user.Claims)
+            foreach (var item in claims)
             {
                 if (item.ClaimType == "DashboardItems")
                     return item.ClaimValue.ParseToIntList();
@@ -61,7 +61,7 @@ public static class ClientExtensions
         }
         return new List<int>();
     }
-    public static void DashboardItemsOrder(this User user, List<int> value)
+    public static void DashboardItemsOrder(this List<Claim> claims,int userId,List<int> value)
     {
         var s = new StringBuilder();
         for (var i = 0; i < value.Count; i++)
@@ -71,7 +71,7 @@ public static class ClientExtensions
                 s.Append(',');
         }
 
-        foreach (var item in user.Claims)
+        foreach (var item in claims)
         {
             if (item.ClaimType == "DashboardItems")
             {
@@ -79,11 +79,11 @@ public static class ClientExtensions
                 return;
             }
         }
-        user.Claims.Add(new Claim()
+        claims.Add(new Claim()
         {
             ClaimType = "DashboardItems",
             ClaimValue = s.ToString(),
-            UserId = user.Id
+            UserId = userId
         });
     }
 

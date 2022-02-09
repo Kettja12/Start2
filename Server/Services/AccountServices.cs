@@ -49,6 +49,7 @@ public class AccountServices : ApiServices
                     SessioneExpires = DateTime.UtcNow.AddDays(1),
                     Token = token,
                     User = user,
+                    Claims = claims
                 };
                 return Results.Ok(result);
 

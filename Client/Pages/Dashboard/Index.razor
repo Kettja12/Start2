@@ -40,7 +40,7 @@
         if (StateService.Token == null) return;
         if (await InitDasboardItems())
         {
-            SortList = StateService.User.DashboardItemsOrder();
+            SortList = StateService.Claims.DashboardItemsOrder();
             await LoadDasboardItems();
         }
     }
@@ -69,7 +69,7 @@
     public async Task RemoveControlAsync(int id)
     {
         SortList.Remove(id);
-        StateService.User.DashboardItemsOrder(SortList);
+        StateService.Claims.DashboardItemsOrder(StateService.User.Id,SortList);
         var account = new AccountController(ApiService, AccountService, StateService);
         var status = await account.SaveActiveUserAsync();
         await LoadDasboardItems();
@@ -103,9 +103,9 @@
         ShowAddControlsDialog = false;
         if (id == 0) return;
         SortList.Add(id);
-        StateService.User.DashboardItemsOrder(SortList);
+        StateService.Claims.DashboardItemsOrder(StateService.User.Id,SortList);
         var account = new AccountController(ApiService, AccountService, StateService);
-        var status = await account.SaveActiveUserAsync();
+        var status = await account.SaveActiveClaimsAsync();
         await LoadDasboardItems();
     }
        public async Task MoveControlAsync(int id)
@@ -142,9 +142,9 @@
                     }
                 }
             }
-            StateService.User.DashboardItemsOrder(newSortList);
+            StateService.Claims.DashboardItemsOrder(StateService.User.Id,newSortList);
             var account = new AccountController(ApiService, AccountService, StateService);
-            var status = await account.SaveActiveUserAsync();
+            var status = await account.SaveActiveClaimsAsync();
             SortList = newSortList;
             UserDashboardItems= new List<DashboardItem>();
             StateHasChanged();

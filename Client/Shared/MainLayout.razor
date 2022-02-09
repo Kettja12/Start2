@@ -21,8 +21,8 @@
             <li class="nav-item px-3">
                 <a class="nav-link" aria-current="page" href="./Reservation">@R["Reservation"]</a>
             </li>
-            @if (StateService.User.Claims != null
-           && StateService.User.Claims.IsAdmin())
+            @if (StateService.Claims != null
+           && StateService.Claims.IsAdmin())
             {
                 <li class="nav-item px-3 dropdown">
                     <a class="nav-link dropdown-toggle"

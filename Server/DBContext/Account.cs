@@ -9,21 +9,18 @@ public partial class StartContext
     public async Task<User?> GetUserByIdAsync(int id)
     {
         User? user = await Users
-            .Include(x => x.Claims)
             .FirstOrDefaultAsync(x => x.Id == id);
         return user;
     }
     public async Task<User?> GetUserByUsernameAsync(string username)
     {
         User? user = await Users
-            .Include(x => x.Claims)
             .FirstOrDefaultAsync(x => x.Username == username);
         return user;
     }
     public async Task<List<User>?> GetUsersByUsernameAsync(string username)
     {
         List<User>? user = await Users.Where(x => x.Username == username)
-            .Include(x => x.Claims)
             .ToListAsync();
         return user;
     }
@@ -45,10 +42,6 @@ public partial class StartContext
         }
         Entry(user).State = user.Id == 0 ? EntityState.Added : EntityState.Modified;
         await SaveChangesAsync();
-        if (user.Claims != null)
-        {
-            await SaveClaimsByUserIdAsync(user.Claims, user.Id);
-        }
         return user;
     }
     public async Task<LoginToken?> GetLoginTokenAsunc(int UserId)
