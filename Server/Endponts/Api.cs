@@ -8,7 +8,6 @@ public static partial class Endpoints
         //SystemApi.Map(endpoints);
         MapDashboardApi(endpoints);
         MapReservationApi(endpoints);
-
     }
     public static bool CheckScript(string uncheckedString)
     {
@@ -25,10 +24,14 @@ public static partial class Endpoints
         {
             if (property.PropertyType.Name == "String")
             {
-                var s = property.GetValue(uncheckedOnject, null).ToString();
-                if (s.IndexOf('<')>-1
-                  ||s.IndexOf(';')> -1) 
-                    return false;
+                object value = property.GetValue(uncheckedOnject, null);
+                if (value!= null)
+                {
+                    var s = value.ToString();
+                    if (s.IndexOf('<') > -1
+                      || s.IndexOf(';') > -1)
+                        return false;
+                }
             }
         }
         return true;

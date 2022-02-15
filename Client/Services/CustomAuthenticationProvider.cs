@@ -35,6 +35,7 @@ public class CustomAuthenticationProvider : AuthenticationStateProvider
                 stateService.Token = s.Token;
                 stateService.SessionExpires = s.SessionExpires;
                 stateService.User = s.User;
+                stateService.Claims = s.Claims;
             }
         }
         if (stateService.Token == null

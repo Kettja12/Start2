@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using Start2.Server.DBContext;
 using Start2.Server.Endponts;
 using Start2.Server.Services;
+using System.Net.WebSockets;
 
 var builder = WebApplication.CreateBuilder(args);
 
