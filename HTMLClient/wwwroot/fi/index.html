@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Etusivu</title>
+    <link href="../styles/w3.css" rel="stylesheet" />
+    <link href="../styles/site.css" rel="stylesheet" />
+    <link href="../styles/fontawesome/css/all.css" rel="stylesheet" />
+</head>
+<body>
+    <script src="../scripts/globals.js"></script>
+    <script src="../scripts/index.js"></script>
+    <script src="../scripts/site.js"></script>
+    <script src="../scripts/index.js"></script>
+    <div id="infomessage" class="w3-pale-yellow"></div>
+    <ul class="navbar">
+        <li><a id="homepage" href="javascript:void(0)">Etusivu</a></li>
+        <li><a id="dashboard" class="w3-hide" href="javascript:void(0)">Dashboard</a></li>
+        <li><a id="reservation" class="w3-hide" href="reservation" target="_blank">Varaukset</a></li>
+        <li id="management" class="navdropdown w3-hide">
+            <a href="javascript:void(0)" class="dropbtn">Ylläpito</a>
+            <div class="navdropdown-content">
+                <a name="navlink" id="userslink" href="/fi/users/users.html">Käyttäjät</a>
+                <a name="navlink" id="controlslink" href="/fi/dashboard/controls.html">Työpöytäkontrollit</a>
+                <a name="navlink" id="settingslink" href="/fi/maintenance/Settings.html">Asetukset</a>
+                <a name="navlink" id="translationslink" href="/fi/maintenance/translations.html">Käännökset</a>
+            </div>
+        </li>
+        <li id="logout"
+            class="w3-hide"
+            style="
+                float: right;
+                padding: 12px 8px;">
+            <i class="fa-solid fa-right-from-bracket fa-xl" title="Uloskirjautuminen"></i>
+        </li>
+        <li id="login"
+            style="
+                float: right;
+                padding: 12px 8px;">
+            <i class="fa-solid fa-right-to-bracket fa-xl" title="Sisäänkirjautuminen"></i>
+        </li>
+
+        <li id="showUser"
+            style="
+                float: right;
+                padding: 12px 8px">
+            <span id="fullname"></span>
+            <i class="fa fa-user fa-lg" title="Käyttäjätiedot"></i>
+        </li>
+    </ul>
+    <div id="divhomepage" class="w3-container w3-hide"></div>
+    <div id="divdashboard" class="w3-container w3-hide"></div>
+    <script>
+        initIndex();
+    </script>
+</body>
+</html>

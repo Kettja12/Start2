@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Sisäänkirjautuminen</title>
+    <link href="../../styles/w3.css" rel="stylesheet" />
+    <link href="../../styles/site.css" rel="stylesheet" />
+</head>
+<body>
+    <script src="../../scripts/globals.js"></script>
+    <script src="../../scripts/site.js"></script>
+    <script src="../../scripts/login.js"></script>
+    <script src="../../scripts/api.js"></script>
+    <div class="w3-container"
+         style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height:100vh;
+            ">
+        <div class="w3-card" style="width:300px">
+            <header class="w3-container w3-blue">
+                <h3>Sisäänkirjautuminen</h3>
+            </header>
+
+            <div class="w3-container">
+                <label for="Username">Käyttäjätunnus</label>
+                <input type="text" id="username" />
+                <label>Salasana</label>
+                <input type="password" id="password" />
+            </div>
+
+            <footer class="w3-container">
+                <input type="button" id="login" value="Kirjaudu" />
+            </footer>
+            <div class="w3-panel w3-pale-yellow w3-border"
+                 id="loginError"
+                 style="
+                    display:none;
+                    width:300px;
+                    position:absolute;
+                    z-index:999">
+            </div>
+
+        </div>
+    </div>
+    <script>
+        initLogin();
+    </script>
+</body>
+</html>
