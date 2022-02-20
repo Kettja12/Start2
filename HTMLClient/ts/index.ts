@@ -3,13 +3,18 @@
         if (localStorage.stateservice != undefined) {
             stateservice = JSON.parse(localStorage.stateservice)
         }
-        document.getElementById(activepage).classList.toggle("active")
+        document.getElementById(activepage).classList.toggle("active");
         if (stateservice != undefined) {
             if (stateservice.user != undefined) {
-                document.getElementById("dashboard").classList.toggle("w3-hide")
-                document.getElementById("reservation").classList.toggle("w3-hide")
-                document.getElementById("logout").classList.toggle("w3-hide")
-                document.getElementById("login").classList.toggle("w3-hide")
+                document.getElementById("dashboard").classList.toggle("w3-hide");
+                document.getElementById("reservation").classList.toggle("w3-hide");
+                document.getElementById("logout").classList.toggle("w3-hide");
+                document.getElementById("login").classList.toggle("w3-hide");
+            }
+            if (stateservice.claims !== undefined) {
+                if (isAdmin(stateservice.claims)) {
+                    document.getElementById("management").classList.toggle("w3-hide");
+                }
             }
         }
         else {
@@ -65,7 +70,7 @@
                 content.classList.toggle("w3-hide");
             }
             content = document.getElementById("divdashboard");
-            if (content.classList.contains("w3-hide")===false) {
+            if (content.classList.contains("w3-hide") === false) {
                 content.classList.toggle("w3-hide");
             }
         }

@@ -4,14 +4,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Start2</title>
+    <base href="/"/>
+    <script src="scripts/globals.js"></script>
 </head>
 <body>
-    <script src="scripts/globals.js"></script>
     <script>
-        if (language === 'fi')
-            window.location.replace("/fi");
+        var userLang = navigator.language || navigator.userLanguage; 
+        if (userLang.substring(0, 2) === 'fi')
+            window.location.replace("fi");
         else
-            window.location.replace("/en");
+            window.location.replace("en");
     </script>
 </body>
 </html>

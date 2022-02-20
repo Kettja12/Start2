@@ -1,5 +1,4 @@
-﻿'use strict';
-async function apiGet(method) {
+﻿async function apiGet(method) {
 
     let response = {
         status: "OK",
@@ -15,17 +14,20 @@ async function apiGet(method) {
 
     try {
 
-        let result = await fetch("/"+ method + "?language=" + language, {
+        let result = await fetch(apiserver+ method, {
             cache: "no-store",
             headers: headers,
             mode: 'cors'
         });
         if (result.ok) {
-            return await result.json();
+            let d = await result.json();
+            response.data = d;
+            return response;
         }
         else {
-            response.status = result.status.toString();
-            response.message = result.status.toString();
+            response.status = result.status.toString()
+            let d = await result.json();
+            response.message = d;
             return response;
         }
     }
@@ -53,7 +55,7 @@ async function apiPost(service, data) {
             headers.Authorization = 'bearer ' + t;
     }
     try {
-        let result = await fetch("https://localhost:7265/" + service, {
+        let result = await fetch(apiserver + service, {
             body: JSON.stringify(data),
             cache: "no-store",
             headers: headers,
@@ -65,8 +67,9 @@ async function apiPost(service, data) {
             return response;
         }
         else {
-            response.status = "FAIL";
-            response.message = result.status.toString();
+            response.status = result.status.toString();
+            let d = await result.json();
+            response.message = d;
             return response;
         }
     }

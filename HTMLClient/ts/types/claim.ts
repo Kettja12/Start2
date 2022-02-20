@@ -1,6 +1,6 @@
 ﻿type claimType = {
     id: number;
-    userid: number;
-    claimtype: string;
-    claimvalue: string
+    userId: number;
+    claimType: string;
+    claimValue: string
 }

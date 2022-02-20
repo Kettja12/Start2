@@ -1,8 +1,29 @@
-﻿/**
-  * @param {String} url - address for the HTML to fetch
-  * @return {String} the resulting HTML string fragment
-  */
-async function fetchHtmlAsText(url) {
+﻿async function fetchHtmlAsText(url) {
     return await (await fetch(url)).text();
 }
+
+function isAdmin(claims: Array<claimType>): boolean {
+    for (let i = 0; i < claims.length; i++) {
+        if (claims[i].claimType === "UserGroups"
+            && claims[i].claimValue.includes('Admin')) {
+            return true;
+        }
+        return false;
+    }
+}
+
+function showError(e, message) {
+    e.innerHTML = "<p>" + message + "</p>";
+    e.style.display = 'block';
+    setTimeout(function () {
+        e.style.display = 'none';
+    }, 5000)
+
+}
+function translate(d, s) {
+    let r = d[s];
+    if (r === undefined) return s;
+    return r;
+}
+
 
