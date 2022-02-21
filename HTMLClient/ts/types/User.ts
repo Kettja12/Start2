@@ -1,6 +1,6 @@
 ﻿type userType = {
     id: number;
-    firstname: string;
-    lastname: string;
+    firstName: string;
+    lastName: string;
     username: string
 }

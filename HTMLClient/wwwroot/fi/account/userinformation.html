@@ -1,0 +1,44 @@
+﻿
+    <header class="w3-container w3-blue">
+        <h3>Perustiedot</h3>
+        <span id="hideUserInformation"
+              class="w3-button w3-display-topright">
+            <i class="fa fa-close " onclick='
+                document.getElementById("userinformation").classList.toggle("w3-hide");' ></i>
+        </span>
+
+    </header>
+    <div class="w3-container">
+        <div class="w3-margin-left">
+            <label for="username">Käyttäjätunnus</label><br />
+            <input type="text" id="username" readonly="readonly" />
+        </div>
+        <div class="w3-margin-left">
+            <label for="firstname">Etunimi</label><br />
+            <input type="text" id="firstname" />
+        </div>
+        <div class="w3-margin-left">
+            <label for="lastname">Sukunimi</label><br />
+            <input type="text" id="lastname" />
+        </div>
+        <div class="w3-margin-left">
+            <label>Vanha salasana</label><br />
+            <input type="text" id="oldpassword" />
+        </div>
+
+        <div class="w3-margin-left">
+            <label>Uusi salasana</label><br />
+            <input type="text" id="newpassword" />
+        </div>
+        <div class="w3-margin-left">
+            <label>Salasana varmistus</label><br />
+            <input type="text" id="passwordverification" />
+        </div>
+        <div class="w3-margin-left">
+            <input class="w3-check" type="checkbox" id="isadmin" readonly="readonly" onclick="return false;">
+            <label>Pääkäyttäjä</label>
+        </div>
+        <div class="w3-margin">
+            <button class="w3-button w3-blue w3-round-large" id="saveuser">Tallenna</button>
+        </div>
+    </div>

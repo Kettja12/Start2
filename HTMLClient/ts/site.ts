@@ -18,8 +18,8 @@ function showError(e, message) {
     setTimeout(function () {
         e.style.display = 'none';
     }, 5000)
-
 }
+
 function translate(d, s) {
     let r = d[s];
     if (r === undefined) return s;
