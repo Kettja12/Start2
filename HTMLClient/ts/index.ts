@@ -33,6 +33,13 @@ function initIndex() {
 
         }
         await loadpage(activepage);
+        if (document.getElementById("showUser").getAttribute('listener') !== 'true') {
+            document.getElementById("showUser").addEventListener('click', async (e) => {
+                await loadControl('userinformation', 'account/');
+                await showUserInformation(e)
+            });
+        }
+
 
     });
     document.getElementById("logout").addEventListener("click", () => {
@@ -69,25 +76,19 @@ function initIndex() {
     async function loadpage(control: string) {
         activepage = control
         if (activepage === 'homepage') {
-            let content = document.getElementById("divhomepage");
-            if (content.innerHTML === "") {
-                content.innerHTML = await fetchHtmlAsText("homepage.html");
-                content.classList.toggle("w3-hide");
-            }
+            let content = await loadControl('homepage', '');
             if (content.classList.contains("w3-hide")) {
                 content.classList.toggle("w3-hide");
             }
             content = document.getElementById("divdashboard");
-            if (content.classList.contains("w3-hide") === false) {
-                content.classList.toggle("w3-hide");
+            if (content !== null) {
+                if (content.classList.contains("w3-hide") === false) {
+                    content.classList.toggle("w3-hide");
+                }
             }
         }
         if (activepage === 'dashboard') {
-            let content = document.getElementById("divdashboard");
-            if (content.innerHTML === "") {
-                content.innerHTML = await fetchHtmlAsText("dashboard/dashboard.html");
-                content.classList.toggle("w3-hide");
-            }
+            let content = await loadControl('dashboard', 'dashboard/');
             if (content.classList.contains("w3-hide")) {
                 content.classList.toggle("w3-hide");
             }
@@ -96,67 +97,10 @@ function initIndex() {
                 content.classList.toggle("w3-hide");
             }
         }
-        document.getElementById("showUser").addEventListener("click", async (e) => {
-            let content = document.getElementById("userinformation");
-            if (content.innerHTML === "") {
-                content.innerHTML = await fetchHtmlAsText("account/userinformation.html");
-                document.getElementById("saveuser").addEventListener("click", async () => saveuserInformation());
-            }
-            let xpos = e.pageX - 300;
-            (document.getElementById('username') as HTMLInputElement).value = stateservice.user.username;
-            (document.getElementById('lastname') as HTMLInputElement).value = stateservice.user.lastName;
-            (document.getElementById('firstname') as HTMLInputElement).value = stateservice.user.firstName;
-            (document.getElementById('isadmin') as HTMLInputElement).checked = isAdmin(stateservice.claims);
-            content.style.position = 'absolute';
-            content.style.left = xpos + "px";
-            content.classList.toggle("w3-hide");
-        });
+
+       
     }
 
-    async function saveuserInformation() {
-        let oldpassword = (document.getElementById('oldpassword') as HTMLInputElement).value
-        let newpassword = (document.getElementById('newpassword') as HTMLInputElement).value
-        let passwordverification = (document.getElementById('passwordverification') as HTMLInputElement).value
-
-        if (newpassword != passwordverification) {
-            return "Password and password verification are not same.";
-        }
-        stateservice.user.firstName = (document.getElementById('firstname') as HTMLInputElement).value
-        stateservice.user.lastName = (document.getElementById('lastname') as HTMLInputElement).value
-
-        let response = await apiPost("account/saveuser", stateservice.user);
-        let e = document.getElementById('infomessage');
-        localStorage.setItem('stateservice', JSON.stringify(stateservice));
-        if (response.status === "OK") {
-            let m = translate(indexTranslations, "User save success.");
-            if (newpassword !== '') {
-                let data: SavePasswordModel = {
-                    newPassword: newpassword,
-                    oldPassword: oldpassword,
-                    username: stateservice.user.username
-                }
-                response = await apiPost("account/savePassword", data);
-                if (response.status === "OK") {
-                    m = m + ' ' + translate(indexTranslations, response.data);
-                }
-                else {
-                    m = m + ' ' + translate(indexTranslations, response.message);
-
-                }
-     
-            }
-            if (response.status === "OK") {
-                let content = document.getElementById("userinformation");
-                content.classList.toggle("w3-hide");
-            }
-            showError(e, m);
-
-        }
-        else {
-            showError(e, translate(indexTranslations, response.message));
-        }
-
-    }
-
+  
 
 }

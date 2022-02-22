@@ -26,4 +26,15 @@ function translate(d, s) {
     return r;
 }
 
+async function loadControl(controlname:string,path:string) {
+    let content = document.getElementById('div'+controlname);
+    if (content === null) {
+        content = document.createElement('div');
+        content.innerHTML = await fetchHtmlAsText(path+controlname+".html");
+        document.body.append(content.firstElementChild);
+        content = document.getElementById("div" + controlname);
+    }
+    return content;
+
+}
 

@@ -1,10 +1,17 @@
-﻿
+﻿    <div id="divuserinformation"
+     class="w3-card-4 w3-hide"
+     style="
+            background-color:white;
+            width:300px;
+            top:70px;
+            z-index:1000">
+
     <header class="w3-container w3-blue">
         <h3>Perustiedot</h3>
         <span id="hideUserInformation"
               class="w3-button w3-display-topright">
             <i class="fa fa-close " onclick='
-                document.getElementById("userinformation").classList.toggle("w3-hide");' ></i>
+                document.getElementById("divuserinformation").classList.toggle("w3-hide");' ></i>
         </span>
 
     </header>
@@ -42,3 +49,11 @@
             <button class="w3-button w3-blue w3-round-large" id="saveuser">Tallenna</button>
         </div>
     </div>
+    <script>
+        userInformationTranslations = {
+            'Failed to fetch': 'Tietokantayhteys virhe.',
+            'Password and password verification are not same.': 'Salasana  ja salasanavarmenne eivät ole samat.',
+            'User save success.': 'Köyttäjätietojen tallennus onnistui.'
+        }
+    </script>
+</div>
