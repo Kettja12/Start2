@@ -33,12 +33,10 @@ function initIndex() {
 
         }
         await loadpage(activepage);
-        if (document.getElementById("showUser").getAttribute('listener') !== 'true') {
-            document.getElementById("showUser").addEventListener('click', async (e) => {
-                await loadControl('userinformation', 'account/');
-                await showUserInformation(e)
-            });
-        }
+        document.getElementById("showUser").addEventListener('click', async (e) => {
+            await loadControl('userinformation', 'account/');
+            await showUserInformation(e)
+        });
 
 
     });
@@ -98,9 +96,9 @@ function initIndex() {
             }
         }
 
-       
+
     }
 
-  
+
 
 }
