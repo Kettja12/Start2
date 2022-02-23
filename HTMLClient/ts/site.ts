@@ -30,7 +30,7 @@ async function loadControl(controlname:string,path:string) {
     let content = document.getElementById('div'+controlname);
     if (content === null) {
         content = document.createElement('div');
-        content.innerHTML = await fetchHtmlAsText(path+controlname+".html");
+        content.innerHTML = await fetchHtmlAsText(path + controlname + ".html?" + Math.random());
         document.body.append(content.firstElementChild);
         content = document.getElementById("div" + controlname);
     }
@@ -38,3 +38,13 @@ async function loadControl(controlname:string,path:string) {
 
 }
 
+function loadScript(src, callback,path) {
+
+    var script = <HTMLScriptElement>document.createElement('script');
+    script.type = 'text/javascript';
+    script.onload = () => {
+        if (callback) callback(path);
+    };
+    script.src = src;
+    document.head.appendChild(script);
+}

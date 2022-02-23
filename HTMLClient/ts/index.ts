@@ -32,43 +32,43 @@ function initIndex() {
             }
 
         }
-        await loadpage(activepage);
         document.getElementById("showUser").addEventListener('click', async (e) => {
             await loadControl('userinformation', 'account/');
             await showUserInformation(e)
         });
-
-
-    });
-    document.getElementById("logout").addEventListener("click", () => {
-        localStorage.removeItem('stateservice');
-        window.location.href = '/';
-    });
-    document.getElementById("login").addEventListener("click", () => {
-        localStorage.removeItem('stateservice');
-        window.location.href = 'account/login.html';
-    });
-    document.getElementById("homepage").addEventListener("click", async () => {
-        let content = document.getElementById("homepage");
-        if (content.classList.contains("active") == false) {
-            content.classList.toggle("active");
-        }
-        content = document.getElementById("dashboard");
-        if (content.classList.contains("active") == true) {
-            content.classList.toggle("active");
-        }
-        await loadpage('homepage');
-    });
-    document.getElementById("dashboard").addEventListener("click", async () => {
-        let content = document.getElementById("homepage");
-        if (content.classList.contains("active") === true) {
-            content.classList.toggle("active");
-        }
-        content = document.getElementById("dashboard");
-        if (content.classList.contains("active") == false) {
-            content.classList.toggle("active");
-        }
-        await loadpage('dashboard');
+        document.getElementById("logout").addEventListener("click", () => {
+            localStorage.removeItem('stateservice');
+            window.location.href = '/';
+        });
+        document.getElementById("login").addEventListener("click", () => {
+            localStorage.removeItem('stateservice');
+            window.location.href = 'account/login.html';
+        });
+        document.getElementById("homepage").addEventListener("click",
+            async () => {
+                let content = document.getElementById("homepage");
+                if (content.classList.contains("active") == false) {
+                    content.classList.toggle("active");
+            }
+            content = document.getElementById("dashboard");
+            if (content.classList.contains("active") == true) {
+                content.classList.toggle("active");
+            }
+            await loadpage('homepage');
+        });
+        document.getElementById("dashboard").addEventListener("click",
+            async () => {
+                let content = document.getElementById("homepage");
+                if (content.classList.contains("active") === true) {
+                    content.classList.toggle("active");
+            }
+            content = document.getElementById("dashboard");
+            if (content.classList.contains("active") == false) {
+                content.classList.toggle("active");
+            }
+            await loadpage('dashboard');
+        });
+        await loadpage(activepage);
     });
 
     async function loadpage(control: string) {
@@ -87,6 +87,13 @@ function initIndex() {
         }
         if (activepage === 'dashboard') {
             let content = await loadControl('dashboard', 'dashboard/');
+            if (typeof initDashboard === "function") {
+                initDashboard();
+            }
+            else {
+                loadScript('../scripts/dashboard/dashboard.js', loadpage, 'dashboard')
+            }
+            //loadAndRun(initDashboard, 'scripts/dashboard/dashboard.js');
             if (content.classList.contains("w3-hide")) {
                 content.classList.toggle("w3-hide");
             }
