@@ -26,25 +26,25 @@ function translate(d, s) {
     return r;
 }
 
-async function loadControl(controlname:string,path:string) {
-    let content = document.getElementById('div'+controlname);
-    if (content === null) {
-        content = document.createElement('div');
-        content.innerHTML = await fetchHtmlAsText(path + controlname + ".html?" + Math.random());
-        document.body.append(content.firstElementChild);
-        content = document.getElementById("div" + controlname);
-    }
+async function loadControl(controlname: string) {
+    let content = document.createElement('div');
+    content.innerHTML = await fetchHtmlAsText(controlname + ".html?" + Math.random());
+    content = <HTMLDivElement>content.firstElementChild;
+    document.body.append(content);
     return content;
 
 }
 
-function loadScript(src, callback,path) {
+function loadScript(src, fname,e) {
 
     var script = <HTMLScriptElement>document.createElement('script');
     script.type = 'text/javascript';
     script.onload = () => {
-        if (callback) callback(path);
+        runByName(fname,e)
     };
-    script.src = src;
+    script.src = src + '?x=' + Math.random();
     document.head.appendChild(script);
+}
+function runByName(fname: string, e) {
+    window[fname](e);
 }

@@ -4,10 +4,10 @@
     'User save success.': 'User save success.'
 }
 
-async function showUserInformation(e) {
+async function initUserInformation(e) {
 
-    document.getElementById("saveuser").addEventListener("click", async () => saveuserInformation());
-    let content = document.getElementById("divuserinformation");
+    document.getElementById("saveUser").addEventListener("click", async () => saveuserInformation());
+    let content = document.getElementById("divUserInformation");
 
     let xpos = e.pageX - 300;
     (document.getElementById('username') as HTMLInputElement).value = stateservice.user.username;
@@ -54,7 +54,7 @@ async function saveuserInformation() {
 
         }
         if (response.status === "OK") {
-            let content = document.getElementById("userinformation");
+            let content = document.getElementById("divUserInformation");
             content.classList.toggle("w3-hide");
         }
         showError(e, m);

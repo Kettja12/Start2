@@ -3,14 +3,20 @@
     let response = {
         status: "OK",
         message: "OK",
-        data: "",
+        data: undefined,
     };
     let headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
+        'Authorization': ''
 
     };
+    if (stateservice !== undefined) {
+        let t = stateservice.token;
+        if (typeof t != 'undefined')
+            headers.Authorization = 'bearer ' + t;
+    }
 
     try {
 

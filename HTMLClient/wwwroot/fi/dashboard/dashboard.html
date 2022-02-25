@@ -1,4 +1,24 @@
-﻿<div id="divdashboard" 
-     class="w3-container w3-hide w3-margin" 
+﻿<div id="divDashboard"
+     class="w3-container w3-hide w3-margin"
      style="height:90vh; background-color:yellow">
+    <div id="hiddenDasboardItems"
+         class="w3-card-4 w3-hide"
+         style="
+            background-color:white;
+            width:300px;
+            top:70px;
+            z-index:1000">
+        <header class="w3-container w3-blue">
+            <h4>Lisää kontrolli työpödälle</h4>
+            <span id="hideHiddenDasboardItems"
+                  class="w3-button w3-display-topright">
+                <i id=hideHiddenControllist class="fa fa-close "></i>
+            </span>
+        </header>
+        <div class="w3-container">
+            <ul class="w3-ul w3-hoverable" style="width:280px;cursor:default" id="hiddenControllist">
+            </ul>
+
+        </div>
+    </div>
 </div>

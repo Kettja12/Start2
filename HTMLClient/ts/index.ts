@@ -33,8 +33,14 @@ function initIndex() {
 
         }
         document.getElementById("showUser").addEventListener('click', async (e) => {
-            await loadControl('userinformation', 'account/');
-            await showUserInformation(e)
+            let content = document.getElementById('divUserInformation');
+            if (content == null) {
+                content = await loadControl('account/userinformation');
+                loadScript('../scripts/account/userinformation.js', 'initUserInformation', e);
+            }
+            else {
+                initUserInformation(e)
+            }
         });
         document.getElementById("logout").addEventListener("click", () => {
             localStorage.removeItem('stateservice');
@@ -46,39 +52,42 @@ function initIndex() {
         });
         document.getElementById("homepage").addEventListener("click",
             async () => {
+                await loadpage('homepage');
                 let content = document.getElementById("homepage");
                 if (content.classList.contains("active") == false) {
                     content.classList.toggle("active");
-            }
-            content = document.getElementById("dashboard");
-            if (content.classList.contains("active") == true) {
-                content.classList.toggle("active");
-            }
-            await loadpage('homepage');
-        });
+                }
+                content = document.getElementById("dashboard");
+                if (content.classList.contains("active") == true) {
+                    content.classList.toggle("active");
+                }
+            });
         document.getElementById("dashboard").addEventListener("click",
             async () => {
+                await loadpage('dashboard');
                 let content = document.getElementById("homepage");
                 if (content.classList.contains("active") === true) {
                     content.classList.toggle("active");
-            }
-            content = document.getElementById("dashboard");
-            if (content.classList.contains("active") == false) {
-                content.classList.toggle("active");
-            }
-            await loadpage('dashboard');
-        });
+                }
+                content = document.getElementById("dashboard");
+                if (content.classList.contains("active") == false) {
+                    content.classList.toggle("active");
+                }
+            });
         await loadpage(activepage);
     });
 
     async function loadpage(control: string) {
         activepage = control
         if (activepage === 'homepage') {
-            let content = await loadControl('homepage', '');
+            let content = document.getElementById('divhomepage');
+            if (content == null) {
+                content = await loadControl('homepage');
+            }
             if (content.classList.contains("w3-hide")) {
                 content.classList.toggle("w3-hide");
             }
-            content = document.getElementById("divdashboard");
+            content = document.getElementById("divDashboard");
             if (content !== null) {
                 if (content.classList.contains("w3-hide") === false) {
                     content.classList.toggle("w3-hide");
@@ -86,14 +95,12 @@ function initIndex() {
             }
         }
         if (activepage === 'dashboard') {
-            let content = await loadControl('dashboard', 'dashboard/');
-            if (typeof initDashboard === "function") {
-                initDashboard();
+            let content = document.getElementById('divDashboard');
+            if (content == null) {
+                content = await loadControl('dashboard/dashboard');
+                loadScript('../scripts/dashboard/dashboard.js', 'initDashboard', undefined);
+
             }
-            else {
-                loadScript('../scripts/dashboard/dashboard.js', loadpage, 'dashboard')
-            }
-            //loadAndRun(initDashboard, 'scripts/dashboard/dashboard.js');
             if (content.classList.contains("w3-hide")) {
                 content.classList.toggle("w3-hide");
             }
