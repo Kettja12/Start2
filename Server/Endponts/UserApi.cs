@@ -10,7 +10,7 @@ public static partial class Endpoints
     {
 
         _ = endpoints.MapPost(APIServices.AccountLogin,
-            async (AccountServices  services, LoginModel postParams) =>
+            async (AccountServices services, LoginModel postParams) =>
         {
             if (CheckObject(postParams) == false) return services.UnacceptedContent();
             return await services.LoginAsync(postParams);
@@ -35,6 +35,13 @@ public static partial class Endpoints
             if (CheckObject(postParams) == false) return services.UnacceptedContent();
             return await services.SavePasswordAsync(postParams);
         });
+        _ = endpoints.MapPost(APIServices.AccountSaveClaim,
+            async (AccountServices services, Claim postParams) =>
+        {
+            if (CheckObject(postParams) == false) return services.UnacceptedContent();
+            return await services.SaveClaimAsync(postParams);
+        });
+
     }
 
 }

@@ -7,22 +7,22 @@ public static class Extensions
         {
             return claims.Where(x => x.ClaimType == key).Select(x => x.ClaimValue).FirstOrDefault();
         }
-        public static void SetClaim(this List<Claim> claims, string key, string value)
+        public static Claim SetClaim(this List<Claim> claims, string key, string value)
         {
             foreach (var item in claims)
             {
                 if (item.ClaimType == key)
                 {
                     item.ClaimValue = value;
-                    return;
+                    return item;
                 }
             }
-            claims.Add(new Claim()
+            return new Claim()
             {
                 UserId = claims.First().UserId,
                 ClaimType = key,
                 ClaimValue = value
-            });
+            };
         }
         public static bool IsAdmin(this List<Claim> claims)
         {

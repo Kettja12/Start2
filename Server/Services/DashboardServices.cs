@@ -61,8 +61,8 @@ namespace Start2.Server.Services
                 else
                 {
                     var claims = await db.GetClaimsByUserIdAsync(UserId);
-                    claims.SetClaim("Item1Params", postParams.Data);
-                    _ = await db.SaveClaimsByUserIdAsync(claims, UserId);
+                    var claim=claims.SetClaim("Item1Params", postParams.Data);
+                    _ = await db.SaveClaimAsync(claim);
                 }
 
                 return Results.Ok(postParams);
@@ -80,7 +80,17 @@ namespace Start2.Server.Services
             {
                 await Task.Delay(3000);
                 if (postParams.A==null || postParams.B==null ) return Results.Ok(postParams);
-                postParams.Result = (int.Parse(postParams.A) + int.Parse(postParams.B)).ToString(); 
+                postParams.Result = "";
+                int a = 0;
+                if (int.TryParse(postParams.A,out a))
+                {
+                    int b = 0;
+                    if (int.TryParse(postParams.B, out b))
+                    {
+                        postParams.Result = (a+b).ToString();
+                    }
+
+                }
                 return Results.Ok(postParams);
             }
             catch (Exception e)

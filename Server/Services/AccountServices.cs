@@ -195,24 +195,23 @@ public class AccountServices : ApiServices
         }
         return Results.Conflict("Claims search failed.");
     }
-    public async Task<IResult> SaveClaimsAsync(UserClaimsModel postParams)
+    public async Task<IResult> SaveClaimAsync(Claim postParams)
     {
         try
         {
-            if (postParams.UserId == 0
-                || postParams.Claims == null)
+            if (postParams.UserId == 0)
                 return InvalidParameters();
             bool isAdmin = await CheckIsAdminAsync(UserId);
             if (isAdmin == false)
                 return AccessDenied();
-            List<Claim>? claims = await db.SaveClaimsByUserIdAsync(postParams.Claims, postParams.UserId);
-            return Results.Ok(claims);
+            Claim? claim = await db.SaveClaimAsync(postParams);
+            return Results.Ok(claim);
         }
         catch (Exception e)
         {
             logger.LogError("ex: ", e);
         }
-        return Results.Conflict("Claims save failed.");
+        return Results.Conflict("Claim save failed.");
     }
     private string CreateJWTToken(int UserId)
     {

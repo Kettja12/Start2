@@ -76,29 +76,27 @@ public partial class StartContext
         return new List<Claim>();
     }
 
-    public async Task<List<Claim>> SaveClaimsByUserIdAsync(List<Claim> claims, int userId)
+    public async Task<Claim> SaveClaimAsync(Claim claim)
     {
-        if (Claims != null && claims != null)
+        if (claim != null)
         {
-            List<Claim>? oldClaims = await Claims.Where(x => x.UserId == userId).ToListAsync();
-            foreach (var claim in claims)
+            if (claim.Id > 0)
             {
-                Claim? oldclaim = oldClaims.FirstOrDefault(x => x.Id == claim.Id);
+                Claim? oldclaim = await Claims.FirstOrDefaultAsync(x => x.Id == claim.Id);
                 if (oldclaim! != null)
                 {
                     oldclaim.ClaimValue = claim.ClaimValue;
                 }
-                else
-                {
-                    if (claim.UserId == 0) claim.UserId = userId;
-                    await AddAsync(claim);
-                }
-
             }
+            else
+            {
+                await AddAsync(claim);
+            }
+
             await SaveChangesAsync();
-            return claims;
+            return claim;
         }
-        return new List<Claim>();
+        return new Claim();
     }
 
 }

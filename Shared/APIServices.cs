@@ -10,7 +10,7 @@ public class APIServices
         AccountLogin = "/Account/Login",
         AccountGetUsers = "/Account/GetUsers",
         AccountGetClaims = "/Account/GetClaims",
-        AccountSaveClaims = "/Account/SaveClaims",
+        AccountSaveClaim = "/Account/SaveClaim",
         AccountSaveUser = "/Account/SaveUser",
         AccountSavePassword = "/Account/SavePassword",
         ReservationGetReservationNodes= "/Reservation/GetReservationNodes",

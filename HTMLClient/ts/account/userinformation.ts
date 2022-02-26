@@ -21,6 +21,8 @@ async function initUserInformation(e) {
 }
 
 async function saveuserInformation() {
+    let c = document.getElementById("userInformationTranslations");
+    userInformationTranslations = JSON.parse(c.innerHTML);
     let oldpassword = (document.getElementById('oldpassword') as HTMLInputElement).value
     let newpassword = (document.getElementById('newpassword') as HTMLInputElement).value
     let passwordverification = (document.getElementById('passwordverification') as HTMLInputElement).value
