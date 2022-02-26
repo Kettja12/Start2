@@ -32,11 +32,9 @@ async function loadControl(controlname: string) {
     content = <HTMLDivElement>content.firstElementChild;
     document.body.append(content);
     return content;
-
 }
 
 function loadScript(src, fname,e) {
-
     var script = <HTMLScriptElement>document.createElement('script');
     script.type = 'text/javascript';
     script.onload = () => {
@@ -45,6 +43,25 @@ function loadScript(src, fname,e) {
     script.src = src + '?x=' + Math.random();
     document.head.appendChild(script);
 }
+
 function runByName(fname: string, e) {
     window[fname](e);
+}
+
+function toggleClassOn(control: string,cssClass:string) {
+    let content = document.getElementById(control);
+    if (content.classList.contains(cssClass) === false) {
+        content.classList.toggle(cssClass);
+    }
+}
+
+function toggleClassOff(control: string, cssClass: string) {
+    let content = document.getElementById(control);
+    if (content.classList.contains(cssClass)) {
+        content.classList.toggle(cssClass);
+    }
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }

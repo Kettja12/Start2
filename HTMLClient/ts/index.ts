@@ -4,33 +4,28 @@
 }
 
 function initIndex() {
-    document.addEventListener("DOMContentLoaded", async () => {
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadpage("homepage");
+        toggleClassOn("homepage", 'active');
+        toggleClassOff('divHomepage', 'w3-hide');
         if (localStorage.stateservice != undefined) {
             stateservice = JSON.parse(localStorage.stateservice)
         }
-        document.getElementById(activepage).classList.toggle("active");
         if (stateservice != undefined) {
             if (stateservice.user != undefined) {
-                document.getElementById("dashboard").classList.toggle("w3-hide");
-                document.getElementById("reservation").classList.toggle("w3-hide");
-                document.getElementById("logout").classList.toggle("w3-hide");
-                document.getElementById("login").classList.toggle("w3-hide");
-                (document.getElementById("fullname") as HTMLSpanElement).textContent =
+                toggleClassOff('dashboard', 'w3-hide');
+                toggleClassOff('reservation', 'w3-hide');
+                toggleClassOff('showUser', 'w3-hide');
+                toggleClassOff('logout', 'w3-hide');
+                toggleClassOn('login', 'w3-hide');
+                (document.getElementById('fullname') as HTMLSpanElement).textContent =
                     stateservice.user.firstName + ' ' + stateservice.user.lastName;
-
             }
             if (stateservice.claims !== undefined) {
                 if (isAdmin(stateservice.claims)) {
-                    document.getElementById("management").classList.toggle("w3-hide");
+                    toggleClassOff('management', 'w3-hide');
                 }
             }
-        }
-        else {
-            if (activepage != "homepage") {
-                activepage = "homepage"
-                document.getElementById("homepage").classList.toggle("active")
-            }
-
         }
         document.getElementById("showUser").addEventListener('click', async (e) => {
             let content = document.getElementById('divUserInformation');
@@ -53,66 +48,35 @@ function initIndex() {
         document.getElementById("homepage").addEventListener("click",
             async () => {
                 await loadpage('homepage');
-                let content = document.getElementById("homepage");
-                if (content.classList.contains("active") == false) {
-                    content.classList.toggle("active");
-                }
-                content = document.getElementById("dashboard");
-                if (content.classList.contains("active") == true) {
-                    content.classList.toggle("active");
-                }
+
+                toggleClassOn('homepage', 'active');
+                toggleClassOff('divHomepage', 'w3-hide');
+
+                toggleClassOff('dashboard', 'active');
+                toggleClassOn('divDashboard', 'w3-hide');
             });
         document.getElementById("dashboard").addEventListener("click",
             async () => {
                 await loadpage('dashboard');
-                let content = document.getElementById("homepage");
-                if (content.classList.contains("active") === true) {
-                    content.classList.toggle("active");
-                }
-                content = document.getElementById("dashboard");
-                if (content.classList.contains("active") == false) {
-                    content.classList.toggle("active");
-                }
-            });
-        await loadpage(activepage);
-    });
 
-    async function loadpage(control: string) {
-        activepage = control
-        if (activepage === 'homepage') {
-            let content = document.getElementById('divhomepage');
-            if (content == null) {
+                toggleClassOff('homepage', 'active');
+                toggleClassOn('divHomepage', 'w3-hide');
+
+                toggleClassOn('dashboard', 'active');
+                toggleClassOff('divDashboard', 'w3-hide');
+            });
+    });
+    async function loadpage(page: string) {
+        let content = document.getElementById('div' + capitalizeFirstLetter(page));
+        if (content === null) {
+            if (page === 'homepage') {
                 content = await loadControl('homepage');
             }
-            if (content.classList.contains("w3-hide")) {
-                content.classList.toggle("w3-hide");
-            }
-            content = document.getElementById("divDashboard");
-            if (content !== null) {
-                if (content.classList.contains("w3-hide") === false) {
-                    content.classList.toggle("w3-hide");
-                }
-            }
-        }
-        if (activepage === 'dashboard') {
-            let content = document.getElementById('divDashboard');
-            if (content == null) {
+            if (page === 'dashboard') {
                 content = await loadControl('dashboard/dashboard');
-                loadScript('../scripts/dashboard/dashboard.js', 'initDashboard', undefined);
-
-            }
-            if (content.classList.contains("w3-hide")) {
-                content.classList.toggle("w3-hide");
-            }
-            content = document.getElementById("divhomepage");
-            if (content.classList.contains("w3-hide") === false) {
-                content.classList.toggle("w3-hide");
+                loadScript('../scripts/dashboard/dashboard.js',
+                    'initDashboard', undefined);
             }
         }
-
-
     }
-
-
-
 }
