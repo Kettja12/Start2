@@ -238,7 +238,7 @@ namespace Start2.Client.Controllers
 
                 }
                 var response = await apiService.PostServiceAsync(
-                APIServices.AccountSaveClaims, stateService.Claims);
+                APIServices.AccountSaveClaim, stateService.Claims);
                 var firstResult = await response.Content.ReadFromJsonAsync<List<Claim>>();
                 if (response.StatusCode == HttpStatusCode.OK)
                 {

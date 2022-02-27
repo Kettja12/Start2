@@ -53,15 +53,15 @@ namespace Start2.Server.Services
             try
             {
                 await Task.Delay(2000);
-                if (postParams.Data == null)
+                if (string.IsNullOrEmpty(postParams.Data))
                 {
                     var claims = await db.GetClaimsByUserIdAsync(UserId);
-                    postParams.Data = claims.GetClaim("Item1Params");
+                    postParams.Data = claims.GetClaim("Item2Params");
                 }
                 else
                 {
                     var claims = await db.GetClaimsByUserIdAsync(UserId);
-                    var claim=claims.SetClaim("Item1Params", postParams.Data);
+                    var claim=claims.SetClaim("Item2Params", postParams.Data);
                     _ = await db.SaveClaimAsync(claim);
                 }
 

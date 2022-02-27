@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ts\chart.js" />
     <None Remove="ts\site.ts" />
   </ItemGroup>
 
@@ -23,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ts\chart.js" />
     <TypeScriptCompile Include="ts\site.ts" />
   </ItemGroup>
 

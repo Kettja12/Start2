@@ -1,0 +1,19 @@
+﻿<div class="w3-container w3-margin-top" 
+    draggable="true"
+    id="Item1"
+    style="float:left"
+    >
+    <div class="w3-card" style="width: 300px; height: 200px">
+        <header class="w3-container w3-blue droptarget"
+             title="Item1">
+            <div style="float:left"><h3>Kontrolli 1</h3></div>
+            <div class="w3-margin-top"  style="float: right"><i class="fa fa fa-close w3-large " onclick="removeItem('Item1');"></i></div>
+            <div class="w3-margin-right w3-margin-top"  style="float:right"><i class="fa fa fa-refresh w3-large" onclick="loadItem1('Item1');"></i></div>
+
+        </header>
+        <i id="item1spinner" class="fa fa-spinner" style="font-size:48px"></i>        
+        <div id="item1container" class="w3-container w3-hide" style="background-color:white">
+            <canvas id="item1Chart" style="width:100%;max-width:300px"></canvas>
+        </div>
+    </div>
+</div>

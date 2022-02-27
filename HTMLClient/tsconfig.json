@@ -2,17 +2,14 @@
   "compileOnSave": true,
   "compilerOptions": {
     "outDir": "wwwroot/scripts",
-    "typeRoots": [
-      "ts/types"
-    ],
     "noImplicitAny": false,
     "noEmitOnError": true,
     "removeComments": false,
     "sourceMap": true,
-    "target": "ES2021"
+    "target": "ES2021",
+    "moduleResolution": "Node"
   },
   "exclude": [
-    "node_modules",
     "wwwroot"
   ],
   "include": [

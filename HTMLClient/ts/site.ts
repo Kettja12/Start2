@@ -34,11 +34,25 @@ async function loadControl(controlname: string) {
     return content;
 }
 
-function loadScript(src, fname,e) {
+function loadModule(src, fname,e) {
+    var script = <HTMLScriptElement>document.createElement('script');
+    script.type = 'module';
+    //script.type = 'text/javascript';
+    script.onload = () => {
+        if (fname !== undefined) {
+            runByName(fname, e)
+        }
+    };
+    script.src = src + '?x=' + Math.random();
+    document.head.appendChild(script);
+}
+function loadScript(src, fname, e) {
     var script = <HTMLScriptElement>document.createElement('script');
     script.type = 'text/javascript';
     script.onload = () => {
-        runByName(fname,e)
+        if (fname !== undefined) {
+            runByName(fname, e)
+        }
     };
     script.src = src + '?x=' + Math.random();
     document.head.appendChild(script);
