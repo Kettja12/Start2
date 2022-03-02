@@ -38,7 +38,7 @@ async function saveuserInformation() {
     let response = await apiPost("account/saveuser", stateservice.user);
     localStorage.setItem('stateservice', JSON.stringify(stateservice));
     if (response.status === "OK") {
-        let m = translate(indexTranslations, "User save success.");
+        let m = translate(userInformationTranslations, "User save success.");
         if (newpassword !== '') {
             let data: SavePasswordModel = {
                 newPassword: newpassword,

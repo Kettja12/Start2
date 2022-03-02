@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\scripts\" />
+    <Folder Include="ts\Api\" />
     <Folder Include="wwwroot\styles\fontawesome\" />
   </ItemGroup>
 

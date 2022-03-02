@@ -14,12 +14,11 @@ public static partial class Endpoints
              return await services.GetDashboardItemsAsync();
          });
 
-        //_ = endpoints.MapPost(APIServices.DashboardSaveDashboardItem,
-        //    async (ApiServices services, DashboardItemModel postParams) =>
-        //{
-        //    if (postParams == null) return services.NoParamers();
-        //    return await services.SaveDashboardItemAsync(postParams);
-        //});
+        _ = endpoints.MapPost(APIServices.DashboardSaveDashboardItem,
+            async (DashboardServices services, DashboardItem postParams) =>
+        {
+            return await services.SaveDashboardItemAsync(postParams);
+        });
 
         _ = endpoints.MapPost(APIServices.DashboardGetItem1,
             async (DashboardServices services, Item1 postParams) =>

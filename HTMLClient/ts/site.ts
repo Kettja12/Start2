@@ -39,6 +39,7 @@ function loadModule(src, fname,e) {
     script.type = 'module';
     //script.type = 'text/javascript';
     script.onload = () => {
+        //fname();
         if (fname !== undefined) {
             runByName(fname, e)
         }

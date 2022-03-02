@@ -1,4 +1,5 @@
-﻿async function loadItem3() {
+﻿export {loadItem3}
+async function loadItem3() {
     let data: Item3Type = {
         a: (document.getElementById('i3A') as HTMLInputElement).value,
         b: (document.getElementById('i3B') as HTMLInputElement).value,

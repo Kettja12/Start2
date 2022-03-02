@@ -101,7 +101,7 @@ namespace Start2.Server.Services
         }
 
 
-        private Task<IResult> SaveDashboardItemAsync(DashboardItem s)
+        public Task<IResult> SaveDashboardItemAsync(DashboardItem s)
         {
             throw new NotImplementedException();
         }

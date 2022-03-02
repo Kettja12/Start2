@@ -1,4 +1,5 @@
-﻿let indexTranslations = {
+﻿import { initDashboard} from "./dashboard/dashboard.js"
+let indexTranslations = {
     'Password and password verification are not same.': 'Password and password verification are not same.',
     'User save success.': 'User save success.'
 }
@@ -73,8 +74,9 @@ async function loadpage(page: string) {
         }
         if (page === 'dashboard') {
             content = await loadControl('dashboard/dashboard');
-            loadScript('../scripts/dashboard/dashboard.js',
-                'initDashboard', undefined);
+            initDashboard();
+            //loadModule('../scripts/dashboard/dashboard.js',
+            //    'initDashboard', undefined);
         }
     }
 }

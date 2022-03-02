@@ -1,6 +1,5 @@
 ﻿/// <reference path="../node_modules/@types/chart.js/index.d.ts" />
 loadScript('../scripts/chart.js', undefined, undefined);
-
 async function loadItem1() {
     let data = {
     };
@@ -13,7 +12,6 @@ async function loadItem1() {
         var xValues = ["Q1", "Q2","Q3","Q4"];
         var yValues1 = [];
         var yValues2 = [];
-        var labels = ["2021", "2022"];
         let graphdata = <Item1Type>response.data;
         for (let i = 0; i < 4; i++) {
             yValues1.push(graphdata.renevue[i]);
@@ -38,8 +36,6 @@ async function loadItem1() {
             options: {
             }
         });
-
-
         toggleClassOn("item1spinner", "w3-hide");
         toggleClassOff("item1container", "w3-hide");
 

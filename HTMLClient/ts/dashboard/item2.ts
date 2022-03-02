@@ -1,4 +1,5 @@
-﻿async function loadItem2() {
+﻿export {loadItem2}
+async function loadItem2() {
     let container = <HTMLInputElement>document.getElementById('username');
     let data = {
         data:container.value

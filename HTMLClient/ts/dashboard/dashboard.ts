@@ -1,4 +1,8 @@
-﻿let controlTitles = {
+﻿import { getDashboardItems } from "./dashboardapi.js"
+import { loadItem2 } from "./item2.js"
+import { loadItem3 } from "./item3.js"
+export { initDashboard}
+let controlTitles = {
     'Item1': 'Item 1',
     'Item2': 'Item 2',
     'Item3': 'Item 3'
@@ -6,6 +10,7 @@
 let hiddenControlslist: dashboardItemType[];
 let controlslist: dashboardItemType[];
 let sortlist: number[];
+
 async function initDashboard() {
     let c = document.getElementById("controlTitles");
     controlTitles = JSON.parse(c.innerHTML);
@@ -42,12 +47,11 @@ async function initDashboard() {
             let dropControl = document.getElementById(data);
             dropControl.style.opacity = "1";
             let divDashboardItems = document.getElementById("divDashboardItems");
-            if (sortNodes(data, (e.target as HTMLDivElement).title))
+            if (await  sortNodes(data, (e.target as HTMLDivElement).title))
                 divDashboardItems.insertBefore(dropControl, dropTarget);
             else
                 divDashboardItems.insertBefore(dropControl, dropTarget.nextSibling);
-            setSortlist();
-           // await saveUser()
+            saveClaim(sortlist.toString())
 
         }
     });
@@ -56,13 +60,9 @@ async function initDashboard() {
 }
 
 async function loadDashboard() {
-    let response = await apiGet("Dashboard/GetDashboardItems");
-    if (response.status === "OK") {
-        controlslist = <Array<dashboardItemType>>response.data;
-        await this.setControls();
-        return;
-    }
-
+    controlslist = await getDashboardItems();
+    if (controlslist != null)
+        await setControls();
 }
 
 async function setControls() {
@@ -98,12 +98,14 @@ async function setControls() {
                 divDashboardItems.appendChild(content);
                 if (control.control === 'Item1') {
                     loadScript('../scripts/dashboard/' + control.control + '.js',
-                          'load' + control.control, undefined);
-                    //runByName('loadItem1', undefined);
+                          'load' + control.control, "loadItem1");
+                    runByName('loadItem1', undefined);
                 }
-                else {
-                    loadScript('../scripts/dashboard/' + control.control + '.js',
-                        'load' + control.control, undefined);
+                if (control.control === 'Item2') {
+                    loadItem2();
+                }
+                if (control.control === 'Item3') {
+                    loadItem3();
                 }
             }
         }
@@ -111,15 +113,6 @@ async function setControls() {
 
 
 }
-function setSortlist() {
-    stateservice.claims.forEach(function (claim) {
-        if (claim.claimType === "DashboardItems") {
-            claim.claimValue = sortlist.toString();
-            return;
-        }
-    });
-}
-
 
 function getSortlist() {
     let sortlist = [];
@@ -196,7 +189,8 @@ async function saveClaim(s) {
     else {
         //showInfoMessage(response.message, "w3-yellow");
     }
-    await setControls();
+    localStorage.setItem('stateservice', JSON.stringify(stateservice));
+
 }
 async function removeItem(item) {
 
@@ -271,6 +265,7 @@ async function sortNodes(fromNode, toNode) {
 
         }
         sortlist = newSortlist;
+        return false;
     }
 
 }
