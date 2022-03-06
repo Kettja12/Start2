@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Start2.Server", "Server\Sta
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Start2.Shared", "Shared\Start2.Shared.csproj", "{6E0D7B9B-F66F-48ED-9CCD-11A862C8BA8D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Start2.DBContext", "DBContext\Start2.DBContext.csproj", "{AF3155C8-C621-461F-B22D-C8B442324F9E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{6E0D7B9B-F66F-48ED-9CCD-11A862C8BA8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E0D7B9B-F66F-48ED-9CCD-11A862C8BA8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E0D7B9B-F66F-48ED-9CCD-11A862C8BA8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF3155C8-C621-461F-B22D-C8B442324F9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF3155C8-C621-461F-B22D-C8B442324F9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF3155C8-C621-461F-B22D-C8B442324F9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF3155C8-C621-461F-B22D-C8B442324F9E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

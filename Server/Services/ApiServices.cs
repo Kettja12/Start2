@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Localization;
-using Start2.Server.DBContext;
+﻿using Start2.DBContext;
 using Start2.Shared;
 using System.Text.Json;
 

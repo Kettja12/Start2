@@ -1,5 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using Start2.Server.DBContext;
+using Start2.DBContext;
 using Start2.Shared.Model;
 using Start2.Shared.Model.Account;
 using System.IdentityModel.Tokens.Jwt;
@@ -31,8 +31,6 @@ public class AccountServices : ApiServices
 
                 User? user = await db.GetUserByUsernameAsync(postParams.Username);
                 if (user == null) break;
-                List<Claim>? claims = await db.GetClaimsByUserIdAsync(user.Id);
-                if (claims == null) break;
 
                 string? s = postParams.Username.ToUpper().Trim() + postParams.Password.Trim();
                 string? token = CreateToken(s);
@@ -49,7 +47,6 @@ public class AccountServices : ApiServices
                     SessioneExpires = DateTime.UtcNow.AddDays(1),
                     Token = token,
                     User = user,
-                    Claims = claims
                 };
                 return Results.Ok(result);
 
@@ -71,12 +68,12 @@ public class AccountServices : ApiServices
                 return AccessDenied();
             }
             List<User>? users = null;
-            if (postParams.Searchkey == "1")
+            if (postParams.Searchfield == "1")
             {
-                users = await db.GetUsersByUsernameAsync(postParams.Searchfield ?? "");
+                users = await db.GetUsersByUsernameAsync(postParams.Searchkey ?? "");
             }
             else
-                users = await db.GetUsersByLastNameAsync(postParams.Searchfield ?? "");
+                users = await db.GetUsersByLastNameAsync(postParams.Searchkey ?? "");
             return Results.Ok(users);
         }
         catch (Exception e)

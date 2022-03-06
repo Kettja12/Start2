@@ -4,7 +4,7 @@ public static partial class Endpoints
 {
     public static void Map(IEndpointRouteBuilder endpoints)
     {
-        MapUserApi(endpoints);
+        MapAccountApi(endpoints);
         //SystemApi.Map(endpoints);
         MapDashboardApi(endpoints);
         MapReservationApi(endpoints);

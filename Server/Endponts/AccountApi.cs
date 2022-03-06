@@ -6,7 +6,7 @@ using Start2.Shared.Model.Account;
 namespace Start2.Server.Endponts;
 public static partial class Endpoints
 {
-    public static void MapUserApi(IEndpointRouteBuilder endpoints)
+    public static void MapAccountApi(IEndpointRouteBuilder endpoints)
     {
 
         _ = endpoints.MapPost(APIServices.AccountLogin,

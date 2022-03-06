@@ -1,7 +1,6 @@
-﻿using Start2.Server.DBContext;
+﻿using Start2.DBContext;
 using Start2.Shared;
 using Start2.Shared.Model.Dashboard;
-using System.Text.Json;
 
 namespace Start2.Server.Services
 {
@@ -101,9 +100,21 @@ namespace Start2.Server.Services
         }
 
 
-        public Task<IResult> SaveDashboardItemAsync(DashboardItem s)
+        public async Task<IResult> SaveDashboardItemAsync(DashboardItem s)
         {
-            throw new NotImplementedException();
+            try
+            {
+                bool isAdmin = await CheckIsAdminAsync(UserId);
+                if (isAdmin == false)
+                    return AccessDenied();
+                s = await db.SaveDashboardItemAsync(s);
+                return Results.Ok(s);
+            }
+            catch (Exception e)
+            {
+                logger.LogError("ex: ", e);
+            }
+            return Results.Conflict("DashboardItem save failed.");
         }
 
         public async Task<IResult> GetDashboardItemsAsync()

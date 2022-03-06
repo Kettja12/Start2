@@ -1,7 +1,8 @@
-﻿import { getDashboardItems } from "./dashboardapi.js"
+﻿export { initDashboard, removeItem }
+import { getDashboardItems } from "./dashboardapi.js"
+//import { loadItem1 } from "./item1.js"
 import { loadItem2 } from "./item2.js"
 import { loadItem3 } from "./item3.js"
-export { initDashboard}
 let controlTitles = {
     'Item1': 'Item 1',
     'Item2': 'Item 2',
@@ -97,9 +98,9 @@ async function setControls() {
                 let content = await loadControl("Dashboard/" + control.control)
                 divDashboardItems.appendChild(content);
                 if (control.control === 'Item1') {
+                    //loadItem1();
                     loadScript('../scripts/dashboard/' + control.control + '.js',
-                          'load' + control.control, "loadItem1");
-                    runByName('loadItem1', undefined);
+                         'load' + control.control, "loadItem1");
                 }
                 if (control.control === 'Item2') {
                     loadItem2();
@@ -116,7 +117,7 @@ async function setControls() {
 
 function getSortlist() {
     let sortlist = [];
-    stateservice.claims.forEach(function (claim) {
+    stateservice.user.claims.forEach(function (claim) {
         if (claim.claimType === "DashboardItems") {
             sortlist = parseIntList(claim.claimValue);
             return;
@@ -164,7 +165,7 @@ async function selectHiddenControl(e) {
 async function saveClaim(s) {
     let isset = false;
     let claim: claimType = null;
-    stateservice.claims.forEach(function (oldClaim) {
+    stateservice.user.claims.forEach(function (oldClaim) {
         if (oldClaim.claimType === "DashboardItems") {
             oldClaim.claimValue = s;
             isset = true;
@@ -178,7 +179,7 @@ async function saveClaim(s) {
             claimValue: s,
             userId: stateservice.user.id    
         }
-        stateservice.claims.push(claim)
+        stateservice.user.claims.push(claim)
     }
 
 

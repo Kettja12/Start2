@@ -55,7 +55,8 @@ async function apiPost(service, data) {
         'Access-Control-Allow-Origin': '*',
         'Authorization':''
     };
-    if (stateservice !== undefined) {
+    if (stateservice !== undefined
+        && stateservice !== null) {
         let t = stateservice.token;
         if (typeof t != 'undefined')
             headers.Authorization = 'bearer ' + t;
@@ -63,19 +64,20 @@ async function apiPost(service, data) {
     try {
         let result = await fetch(apiserver + service, {
             body: JSON.stringify(data),
+            //body: data,
             cache: "no-store",
             headers: headers,
             method: 'POST'
         });
         if (result.ok) {
             let d = await result.json();
+
             response.data = d;
             return response;
         }
         else {
             response.status = result.status.toString();
-            let d = await result.json();
-            response.message = d;
+            //response.message = await result.text();
             return response;
         }
     }

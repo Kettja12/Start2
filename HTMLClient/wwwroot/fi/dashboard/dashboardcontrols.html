@@ -7,7 +7,7 @@
     <title>Työpöytäkontrollit</title>
     <link href="../../styles/w3.css" rel="stylesheet" />
     <link href="../../styles/site.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="/styles/fontawesome/css/all.css" rel="stylesheet" />
 
 </head>
 <body>
@@ -17,15 +17,19 @@
     <script type="module" src="../../scripts/dashboard/dashboardcontrols.js"></script>
     <div id="infomessage" class="w3-pale-yellow"></div>
     <ul class="navbar">
-        <li><h3 class="w3-margin-left" style="color:white">Työpöytäkontrollit</h3></li>
+        <li>
+            <h3 class="w3-margin-left" style="color:white">Työpöytäkontrollit</h3>
+        </li>
         <li style="
             float: right;
-            padding: 6px 8px;
-            color:white"
-            onclick="window.history.back();">
-            <i class="material-icons w3-xxlarge">close</i>
+            padding-top:14px;
+            padding-right: 10px; 
+            color:white">
+            <i class="fa fa-close" 
+               style="font-size:30px" 
+               onclick="window.history.back()">
+            </i>
         </li>
-
     </ul>
     <div style="
         height: 90vh;
@@ -39,15 +43,7 @@
 
         </div>
         <div style=" display: inline-block; vertical-align: top;width:400px">
-            <div style="float:left" class="w3-container w3-margin">
-                <button class="w3-button w3-blue w3-round-large" id="savecontrol">Tallenna kontrolli</button>
-
-            </div>
             <div style="float:left" class="w3-container w3-margin ">
-                <div class="w3-margin-left">
-                    <label>Otsikko</label><br />
-                    <input type="text" id="title" readonly="readonly" />
-                </div>
                 <div class="w3-margin-left">
                     <label for="firstname">Kontrolli</label><br />
                     <input type="text" id="control" readonly="readonly" />
@@ -60,8 +56,18 @@
                     <input class="w3-check" type="checkbox" id="inuse">
                     <label>Käytössä</label>
                 </div>
+                <div class="w3-margin">
+                    <button class="w3-button w3-blue w3-round-large" id="savecontrol">Tallenna kontrolli</button>
+                </div>
             </div>
         </div>
     </div>
+    <div id="translations" class="w3-hide">
+        {
+            "DashboardItem save failed.": "Työpöytäkontrollin tallennus epäonnistui.",
+            "DashboardItem save success.": "Työpöytäkontrollin tallennus onnistui."
+        }
+    </div>
+
 </body>
 </html>

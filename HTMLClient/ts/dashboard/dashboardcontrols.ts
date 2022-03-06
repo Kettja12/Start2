@@ -1,6 +1,14 @@
-import { getDashboardItems } from "./dashboardapi.js"
-export { }
+import { getDashboardItems, saveDashboardItem, getMessage  } from "./dashboardapi.js"
+let translations = {
+    'DashboardItem save failed.': 'DashboardItem save failed.',
+    'DashboardItem save success.': 'DashboardItem save success.'
+}
+
+
 document.addEventListener('DOMContentLoaded', async () => {
+    let c = document.getElementById("translations");
+    translations = JSON.parse(c.innerHTML);
+
     if (stateservice == undefined) {
         window.location.href = '/';
     }
@@ -20,8 +28,7 @@ async function search() {
     ul.innerHTML = "";
     resetcontrol();
     controllist = await  getDashboardItems();
-    let response = await apiGet("Dashboard/GetDashboardItems");
-    if (response != null) {
+    if (controllist != null) {
         await setControls();
     }
 }
@@ -44,15 +51,12 @@ function select(e) {
         resetcontrol();
         var i = e.currentTarget.getAttribute("index");
         currentcontrol = i;
-        console.log(currentcontrol);
-        //(document.getElementById('title') as HTMLInputElement).value = controllist[i].title;
         (document.getElementById('control') as HTMLInputElement).value = controllist[i].control;
         (document.getElementById('userGroups') as HTMLInputElement).value = controllist[i].userGroups;
         (document.getElementById('inuse') as HTMLInputElement).checked = controllist[i].inUse;
 
     }
 function  resetcontrol() {
-        (document.getElementById('title') as HTMLInputElement).value = "";
         (document.getElementById('control') as HTMLInputElement).value = "";
         (document.getElementById('userGroups') as HTMLInputElement).value = "";
         (document.getElementById('inuse') as HTMLInputElement).checked = false;
@@ -60,15 +64,21 @@ function  resetcontrol() {
 
 
 async function savecontrol() {
-    var control = controllist[currentcontrol]
+    let control: dashboardItemType = <dashboardItemType> controllist[currentcontrol]
     control.inUse = (document.getElementById('inuse') as HTMLInputElement).checked;
     control.userGroups = (document.getElementById('userGroups') as HTMLInputElement).value;
-    var response = await apiPost("/Dashboard/SaveDashboardItem", control);
-    if (response.status === "OK") {
-        //showInfoMessage(response.message, "w3-green");
+    let e = document.getElementById('infomessage');
+    let response = await saveDashboardItem(control);
+    if (response != null) {
+        showError(e, translate(translations, 'DashboardItem save success.'));
         return;
     }
-    //showInfoMessage(response.message, "w3-yellow");
+    let message = getMessage();
+    if (message !== "")
+        showError(e, translate(translations, message))
+    else
+        showError(e, translate(translations, "DashboardItem save failed."))
+
 };
 
 

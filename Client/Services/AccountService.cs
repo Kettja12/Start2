@@ -29,7 +29,6 @@ namespace Start2.Client.Services
                 stateService.SessionExpires = loginResponseModel.SessioneExpires;
                 stateService.Token = loginResponseModel.Token;
                 stateService.User = loginResponseModel.User;
-                stateService.Claims = loginResponseModel.Claims;
 
                 await localStorageService.SetItemAsync("stateService", stateService);
 

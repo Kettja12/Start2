@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Käyttäjät</title>
+    <link href="../../styles/w3.css" rel="stylesheet" />
+    <link href="../../styles/site.css" rel="stylesheet" />
+    <link href="/styles/fontawesome/css/all.css" rel="stylesheet" />
+
+</head>
+<body>
+    <script src="../../scripts/globals.js"></script>
+    <script src="../../scripts/site.js"></script>
+    <script src="../../scripts/api.js"></script>
+    <script type="module" src="../../scripts/account/users.js"></script>
+
+    <div id="infomessage" class="w3-pale-yellow"></div>
+    <ul class="navbar">
+        <li>
+            <h3 class="w3-margin-left" style="color:white">Käyttäjät</h3>
+        </li>
+        <li style="
+            float: right;
+            padding-top:14px;
+            padding-right: 10px; 
+            color:white">
+            <i class="fa fa-close" style="font-size:30px" onclick="window.history.back()"></i>
+        </li>
+
+    </ul>
+
+    <div style="
+        height: 90vh;
+        overflow: auto;
+        white-space: nowrap;">
+        <div style="
+            display: inline-block;width:400px;">
+            <div class="w3-container w3-margin">
+                <div style="float:left" class="w3-container">
+                    <h3>Hakuehdot</h3>
+                    <input type="radio" class="w3-radio" name="searchfield" value="1" checked="checked">
+                    <label>Käyttäjätunnus</label><br>
+                    <input type="radio" class="w3-radio" name="searchfield" value="2">
+                    <label>Sukunimi</label><br>
+                    <label>Hakuavain</label><br />
+                    <input type="text" id="searchkey" style="width:80%" />
+                    <button class="w3-button w3-blue w3-round-large" id="search">Hae</button>
+                </div>
+            </div>
+            <div style="float:left" class="w3-container w3-margin">
+                <ul class="w3-ul w3-hoverable" style="width:350px;cursor:default" id="userlist">
+                </ul>
+            </div>
+
+        </div>
+        <div style=" display: inline-block; vertical-align: top;width:400px">
+            <div style="float:left" class="w3-container w3-margin ">
+                <div class="w3-margin-left">
+                    <button class="w3-button w3-blue w3-round-large" id="adduser">Lisää käyttäjä</button>
+                </div>
+                <div class="w3-margin-left">
+                    <label>Käyttäjätunnus</label><br />
+                    <input type="text" id="username" />
+                </div>
+                <div class="w3-margin-left">
+                    <label for="firstname">Etunimi</label><br />
+                    <input type="text" id="firstname" />
+                </div>
+                <div class="w3-margin-left">
+                    <label>Sukunimi</label><br />
+                    <input type="text" id="lastname" />
+                </div>
+                <div class="w3-margin-left">
+                    <label>Salasana</label><br />
+                    <input type="text" id="password" />
+                </div>
+                <div class="w3-margin-left">
+                    <label>Salasana varmistus</label><br />
+                    <input type="text" id="passwordverification" />
+                </div>
+                <div class="w3-margin-left">
+                    <input class="w3-check" type="checkbox" id="isadmin">
+                    <label>Pääkäyttäjä</label>
+                </div>
+                <div class="w3-margin">
+                    <button class="w3-button w3-blue w3-round-large" 
+                            id="saveuser">Tallenna käyttäjä</button>
+                </div>
+            </div>
+       
+            </div>
+    </div>
+    <div id="translations" class="w3-hide">
+        {
+            "PasswordMissing": "Uuden käyttäjän salasana uupuu",
+            "PasswordVerificationError": "Salasana ja varmenne eivät ole samat.",
+            "Userlist search failed.": "Käyttäjälistan haku epäonnistui.",
+            "No result items in search.": "Hakuehdolla ei löydy käyttäjiä."
+
+        }
+    </div>
+</body>
+</html>

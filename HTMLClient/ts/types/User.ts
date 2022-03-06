@@ -2,5 +2,6 @@
     id: number;
     firstName: string;
     lastName: string;
-    username: string
+    username: string;
+    claims: Array<claimType>;
 }

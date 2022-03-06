@@ -1,33 +1,36 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Start2.Shared.Model.Account;
-using Start2.Shared.Model.Dashboard;
 
-namespace Start2.Server.DBContext;
+namespace Start2.DBContext;
 
 public partial class StartContext
 {
     public async Task<User?> GetUserByIdAsync(int id)
     {
         User? user = await Users
+            .Include(c => c.Claims)
             .FirstOrDefaultAsync(x => x.Id == id);
         return user;
     }
     public async Task<User?> GetUserByUsernameAsync(string username)
     {
         User? user = await Users
+            .Include(c => c.Claims)
             .FirstOrDefaultAsync(x => x.Username == username);
         return user;
     }
     public async Task<List<User>?> GetUsersByUsernameAsync(string username)
     {
         List<User>? user = await Users.Where(x => x.Username == username)
+            .Include(c => c.Claims)
             .ToListAsync();
         return user;
     }
     public async Task<List<User>?> GetUsersByLastNameAsync(string lastname)
     {
         return await Users.Where(x => x.LastName.Contains(lastname))
-            .OrderBy(x => x.LastName).ThenBy(x=>x.FirstName)
+            .Include(c => c.Claims)
+            .OrderBy(x => x.LastName).ThenBy(x => x.FirstName)
             .Take(20)
             .ToListAsync();
     }

@@ -12,17 +12,17 @@
         <div class="input-group">
             <div class="form-check m-2">
                 <input type="radio" class="form-check-input" checked name="search"
-                       @onclick=@(() => UserSearchModel.Searchkey="1")>
+                       @onclick=@(() => UserSearchModel.Searchfield="1")>
                 <label class="form-check-label">@R["Username"]</label>
             </div>
             <div class="form-check m-2">
                 <input type="radio" class="form-check-input" name="search"
-                       @onclick=@(() => UserSearchModel.Searchkey ="2")>
+                       @onclick=@(() => UserSearchModel.Searchfield ="2")>
                 <label class="form-check-label">@R["Last Name"]</label>
             </div>
         </div>
         <div class="input-group m-2">
-            <input type="text" class="form-control" @bind="UserSearchModel.Searchfield">
+            <input type="text" class="form-control" @bind="UserSearchModel.Searchkey">
             <button class="btn btn-success" type="submit"
                     disabled=@isBusy @onclick="SearchClick">
                 @R["Search"]
@@ -85,7 +85,7 @@
 
 @code {
     public InfoMessage InfoMessage =default!;
-    public UserSearchModel UserSearchModel = new UserSearchModel() { Searchkey = "1" };
+    public UserSearchModel UserSearchModel = new UserSearchModel() { Searchfield = "1" };
     public List<User> UserListItems = new List<User>();
     public User SelectedUser { get; set; } = new User();
     public List<Claim> SelectedUserClaims { get; set; } = new List<Claim>();

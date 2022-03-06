@@ -1,8 +1,5 @@
-﻿import { initDashboard} from "./dashboard/dashboard.js"
-let indexTranslations = {
-    'Password and password verification are not same.': 'Password and password verification are not same.',
-    'User save success.': 'User save success.'
-}
+﻿import { initDashboard } from "./dashboard/dashboard.js"
+import { initUserInformation } from "./account/userinformation.js"
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadpage("homepage");
@@ -21,8 +18,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             (document.getElementById('fullname') as HTMLSpanElement).textContent =
                 stateservice.user.firstName + ' ' + stateservice.user.lastName;
         }
-        if (stateservice.claims !== undefined) {
-            if (isAdmin(stateservice.claims)) {
+        if (stateservice.user.claims !== undefined) {
+            if (isAdmin(stateservice.user.claims)) {
                 toggleClassOff('management', 'w3-hide');
             }
         }
@@ -31,9 +28,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         let content = document.getElementById('divUserInformation');
         if (content == null) {
             content = await loadControl('account/userinformation');
-            loadScript('../scripts/account/userinformation.js', 'initUserInformation', e);
-        }
-        else {
             initUserInformation(e)
         }
     });
@@ -75,8 +69,6 @@ async function loadpage(page: string) {
         if (page === 'dashboard') {
             content = await loadControl('dashboard/dashboard');
             initDashboard();
-            //loadModule('../scripts/dashboard/dashboard.js',
-            //    'initDashboard', undefined);
         }
     }
 }

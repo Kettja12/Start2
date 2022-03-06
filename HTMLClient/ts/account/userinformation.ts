@@ -1,4 +1,6 @@
-﻿let userInformationTranslations = {
+﻿export { initUserInformation}
+import { savePassword, saveUser, getMessage } from './accountapi.js'
+let userInformationTranslations = {
     'Failed to fetch': 'Database connection failed.',
     'Password and password verification are not same.': 'Password and password verification are not same.',
     'User save success.': 'User save success.'
@@ -13,7 +15,7 @@ async function initUserInformation(e) {
     (document.getElementById('username') as HTMLInputElement).value = stateservice.user.username;
     (document.getElementById('lastname') as HTMLInputElement).value = stateservice.user.lastName;
     (document.getElementById('firstname') as HTMLInputElement).value = stateservice.user.firstName;
-    (document.getElementById('isadmin') as HTMLInputElement).checked = isAdmin(stateservice.claims);
+    (document.getElementById('isadmin') as HTMLInputElement).checked = isAdmin(stateservice.user.claims);
     content.style.position = 'absolute';
     content.style.left = xpos + "px";
     content.classList.toggle("w3-hide");
@@ -35,9 +37,11 @@ async function saveuserInformation() {
     stateservice.user.firstName = (document.getElementById('firstname') as HTMLInputElement).value
     stateservice.user.lastName = (document.getElementById('lastname') as HTMLInputElement).value
 
-    let response = await apiPost("account/saveuser", stateservice.user);
+    //let response = await apiPost("account/saveuser", stateservice.user);
+    let response = saveUser(stateservice.user);
     localStorage.setItem('stateservice', JSON.stringify(stateservice));
-    if (response.status === "OK") {
+    if (response!== null) {
+    //if (response.status === "OK") {
         let m = translate(userInformationTranslations, "User save success.");
         if (newpassword !== '') {
             let data: SavePasswordModel = {
@@ -45,25 +49,18 @@ async function saveuserInformation() {
                 oldPassword: oldpassword,
                 username: stateservice.user.username
             }
-            response = await apiPost("account/savePassword", data);
-            if (response.status === "OK") {
-                m = m + ' ' + translate(userInformationTranslations, response.data);
-            }
-            else {
-                m = m + ' ' + translate(userInformationTranslations, response.message);
-
-            }
-
+            //response = await apiPost("account/savePassword", data);
+            let response = savePassword(data);
+                m = m + ' ' + translate(userInformationTranslations, response);
+         
         }
-        if (response.status === "OK") {
-            let content = document.getElementById("divUserInformation");
-            content.classList.toggle("w3-hide");
-        }
+        let content = document.getElementById("divUserInformation");
+        content.classList.toggle("w3-hide");
         showError(e, m);
 
     }
     else {
-        showError(e, translate(userInformationTranslations, response.message));
+        showError(e, translate(userInformationTranslations, getMessage()));
     }
 
 }

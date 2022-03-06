@@ -3,7 +3,7 @@ using Start2.Shared.Model.Account;
 using Start2.Shared.Model.Dashboard;
 using Start2.Shared.Model.Reservation;
 
-namespace Start2.Server.DBContext;
+namespace Start2.DBContext;
 
 public partial class StartContext : DbContext
 {

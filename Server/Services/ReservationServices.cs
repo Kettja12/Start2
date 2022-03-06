@@ -1,4 +1,4 @@
-﻿using Start2.Server.DBContext;
+﻿using Start2.DBContext;
 using Start2.Shared.Model.Reservation;
 
 namespace Start2.Server.Services

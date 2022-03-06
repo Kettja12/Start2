@@ -1,5 +1,13 @@
-﻿export {loadItem3}
+﻿export { loadItem3 }
+import { removeItem } from "./dashboard.js"
+
 async function loadItem3() {
+    document.getElementById("i3refresh").addEventListener("click", () => {
+        loadItem3();
+    });
+    document.getElementById("i3close").addEventListener("click", () => {
+        removeItem('Item3');
+    });
     let data: Item3Type = {
         a: (document.getElementById('i3A') as HTMLInputElement).value,
         b: (document.getElementById('i3B') as HTMLInputElement).value,
@@ -20,3 +28,4 @@ async function loadItem3() {
 
     }
 }
+

@@ -1,23 +1,28 @@
 ﻿/// <reference path="../node_modules/@types/chart.js/index.d.ts" />
 loadScript('../scripts/chart.js', undefined, undefined);
+//export { loadItem1 }
+//import { Chart } from "chart.js"
+//import { getItem1 } from "./dashboardapi.js"
+let item1message: string = "";
+let chart: Chart = null;
 async function loadItem1() {
-    let data = {
-    };
     toggleClassOff("item1spinner", "w3-hide");
     toggleClassOn("item1container", "w3-hide");
     toggleClassOn("item1spinner", "fa-spin");
-    let response = await apiPost("Dashboard/GetItem1", data);
+    let graphdata = await getItem1();
     toggleClassOff("item1spinner", "fa-spin");
-    if (response.status === "OK") {
+    if (graphdata !== null)
+    {
         var xValues = ["Q1", "Q2","Q3","Q4"];
         var yValues1 = [];
         var yValues2 = [];
-        let graphdata = <Item1Type>response.data;
         for (let i = 0; i < 4; i++) {
             yValues1.push(graphdata.renevue[i]);
             yValues2.push(graphdata.renevue2[i]);
         }
-        new Chart("item1Chart", {
+        //let ctx = <HTMLCanvasElement>document.getElementById("item1Chart");
+        if (chart !== null) chart.destroy();
+        chart = new Chart("item1Chart", {
             type: "bar",
 
             data: {
@@ -40,4 +45,13 @@ async function loadItem1() {
         toggleClassOff("item1container", "w3-hide");
 
     }
+}
+async function getItem1():
+    Promise<Item1Type> {
+    let response = await apiPost("Dashboard/GetItem1", {});
+    if (response.status === "OK") {
+        return <Item1Type>response.data;
+    }
+    item1message = response.message;
+    return null;
 }

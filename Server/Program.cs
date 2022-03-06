@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Start2.Server.DBContext;
+using Start2.DBContext;
 using Start2.Server.Endponts;
 using Start2.Server.Services;
-using System.Net.WebSockets;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -94,7 +93,6 @@ app.UseDeveloperExceptionPage();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-//app.UseExceptionHandler("/Error");
 app.UseHsts();
 app.UseCors();
 app.UseRouting();

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Start2.Shared.Model.Reservation;
 
-namespace Start2.Server.DBContext
+namespace Start2.DBContext
 {
     public partial class StartContext
     {
