@@ -8,8 +8,8 @@ let userInformationTranslations = {
 
 async function initUserInformation(e) {
 
-    document.getElementById("saveUser").addEventListener("click", async () => saveuserInformation());
-    let content = document.getElementById("divUserInformation");
+    (document.getElementById("saveUser") as HTMLElement).addEventListener("click", async () => saveuserInformation());
+    let content = <HTMLElement> document.getElementById("divUserInformation");
 
     let xpos = e.pageX - 300;
     (document.getElementById('username') as HTMLInputElement).value = stateservice.user.username;
@@ -23,7 +23,7 @@ async function initUserInformation(e) {
 }
 
 async function saveuserInformation() {
-    let c = document.getElementById("userInformationTranslations");
+    let c = <HTMLElement> document.getElementById("userInformationTranslations");
     userInformationTranslations = JSON.parse(c.innerHTML);
     let oldpassword = (document.getElementById('oldpassword') as HTMLInputElement).value
     let newpassword = (document.getElementById('newpassword') as HTMLInputElement).value
@@ -54,7 +54,7 @@ async function saveuserInformation() {
                 m = m + ' ' + translate(userInformationTranslations, response);
          
         }
-        let content = document.getElementById("divUserInformation");
+        let content = <HTMLElement> document.getElementById("divUserInformation");
         content.classList.toggle("w3-hide");
         showError(e, m);
 

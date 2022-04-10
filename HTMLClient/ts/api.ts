@@ -1,9 +1,9 @@
-﻿async function apiGet(method) {
-
-    let response = {
+﻿async function apiGet(method):
+    Promise<apiResponseType>{
+    let response:apiResponseType = {
         status: "OK",
         message: "OK",
-        data: undefined,
+        data: null,
     };
     let headers = {
         'Accept': 'application/json',
@@ -37,17 +37,18 @@
             return response;
         }
     }
-    catch (err) {
+    catch (err: any) {
         response.status = "FAIL"
         response.message = err.message;
         return response;
     }
 }
-async function apiPost(service, data) {
-    let response = {
+async function apiPost(service, data):
+    Promise<apiResponseType>{
+    let response: apiResponseType  = {
         status: "OK",
         message: "",
-        data: undefined,
+        data: null,
     };
     let headers = {
         'Accept': 'application/json',
@@ -81,7 +82,7 @@ async function apiPost(service, data) {
             return response;
         }
     }
-    catch (err) {
+    catch (err:any) {
         response.status = "FAIL"
         response.message =  err.message;
         return response;

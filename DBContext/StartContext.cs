@@ -12,7 +12,7 @@ public partial class StartContext : DbContext
     }
 
     public DbSet<User> Users => Set<User>();
-    public DbSet<Claim>? Claims { get; set; }
+    public DbSet<Claim> Claims => Set<Claim>();
     public DbSet<LoginToken> LoginTokens => Set<LoginToken>();
     public DbSet<DashboardItem> DashboardItems => Set<DashboardItem>();
     public DbSet<ReservationNode> ReservationNodes => Set<ReservationNode>();

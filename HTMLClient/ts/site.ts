@@ -8,8 +8,8 @@ function isAdmin(claims: Array<claimType>): boolean {
             && claims[i].claimValue.includes('Admin')) {
             return true;
         }
-        return false;
     }
+    return false;
 }
 
 function showError(e, message) {
@@ -63,15 +63,15 @@ function runByName(fname: string, e) {
     window[fname](e);
 }
 
-function toggleClassOn(control: string,cssClass:string) {
-    let content = document.getElementById(control);
+function toggleClassOn(control: string, cssClass: string) {
+    let content = <HTMLElement> document.getElementById(control);
     if (content.classList.contains(cssClass) === false) {
         content.classList.toggle(cssClass);
     }
 }
 
 function toggleClassOff(control: string, cssClass: string) {
-    let content = document.getElementById(control);
+    let content = <HTMLElement>document.getElementById(control);
     if (content.classList.contains(cssClass)) {
         content.classList.toggle(cssClass);
     }

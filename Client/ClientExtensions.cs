@@ -33,6 +33,33 @@ public static class ClientExtensions
         return result;
     }
 
+    public static List<string> ParseToStringList(this string s)
+    {
+        var result = new List<string>();
+        int index = 0;
+        int value = 0;
+        while (index < s.Length)
+        {
+            switch (s[index])
+            {
+                case ',': result.Add(value.ToString()); value = 0; break;
+                case '0': value *= 10; break;
+                case '1': value = value * 10 + 1; break;
+                case '2': value = value * 10 + 2; break;
+                case '3': value = value * 10 + 3; break;
+                case '4': value = value * 10 + 4; break;
+                case '5': value = value * 10 + 5; break;
+                case '6': value = value * 10 + 6; break;
+                case '7': value = value * 10 + 7; break;
+                case '8': value = value * 10 + 8; break;
+                case '9': value = value * 10 + 9; break;
+            }
+            index++;
+        }
+        if (value > 0) result.Add(value.ToString());
+        return result;
+    }
+
     public static string Translate(this IStringLocalizer<Resource> r, string s)
     {
         var s2 = s.Split('.');
@@ -47,7 +74,7 @@ public static class ClientExtensions
         }
         return result;
     }
-    public static List<int> DashboardItemsOrder(this List<Claim> claims)
+    public static List<string> DashboardItemsOrder(this List<Claim> claims)
     {
 
         if (claims != null)
@@ -56,12 +83,12 @@ public static class ClientExtensions
             foreach (var item in claims)
             {
                 if (item.ClaimType == "DashboardItems")
-                    return item.ClaimValue.ParseToIntList();
+                    return item.ClaimValue.ParseToStringList();
             }
         }
-        return new List<int>();
+        return new List<string>();
     }
-    public static void DashboardItemsOrder(this List<Claim> claims,int userId,List<int> value)
+    public static void DashboardItemsOrder(this List<Claim> claims,string userId,List<string> value)
     {
         var s = new StringBuilder();
         for (var i = 0; i < value.Count; i++)

@@ -9,7 +9,7 @@ let userlist:userType[];
 let currentuser = -1;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    let c = document.getElementById("translations");
+    let c = <HTMLElement> document.getElementById("translations");
     translations = JSON.parse(c.innerHTML);
 
     if (stateservice == undefined) {
@@ -20,13 +20,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.location.href = '/';
         }
     }
-    document.getElementById("search").addEventListener("click", () => search());
-    document.getElementById("adduser").addEventListener("click", () => adduser());
-    document.getElementById("saveuser").addEventListener("click", () => saveuser());
+    (document.getElementById("search") as HTMLElement).addEventListener("click", () => search());
+    (document.getElementById("adduser") as HTMLElement).addEventListener("click", () => adduser());
+    (document.getElementById("saveuser") as HTMLElement).addEventListener("click", () => saveuser());
 });
 
 async function search() {
-    var ul = document.getElementById('userlist');
+    var ul = <HTMLElement>document.getElementById('userlist');
     ul.innerHTML = "";
     resetuser();
     var searchfield = (document.querySelector('input[name="searchfield"]:checked') as HTMLInputElement).value;
@@ -48,7 +48,7 @@ async function search() {
 };
 
 function setusers() {
-    let ul = document.getElementById('userlist');
+    let ul = <HTMLElement> document.getElementById('userlist');
     userlist.forEach(function (user, index) {
         var li = document.createElement('li');
         var span = document.createElement('span');
@@ -158,16 +158,17 @@ async function saveuser() {
             }
         );
     }
-    if (this.currentuser > -1)
-        this.userlist[this.currentuser] = user;
+    if (currentuser > -1)
+        userlist[currentuser] = user;
 
-    user = await saveUser(user);
-    if (user !== null) {
-        if (this.currentuser === -1) {
-            var ul = document.getElementById('userlist');
+    let result = await saveUser(user);
+    if (result !== null) {
+        user = result;
+        if (currentuser === -1) {
+            var ul = <HTMLElement> document.getElementById('userlist');
             ul.innerHTML = "";
-            this.userlist.push(user);
-            this.setusers();
+            userlist.push(user);
+            setusers();
         }
         //showInfoMessage(response.message, "w3-green");
         return;

@@ -30,9 +30,9 @@
     public List<DashboardItem> DashboardItems { get; set; } = new List<DashboardItem>();
     public List<DashboardItem> UserDashboardItems { get; set; } = new List<DashboardItem>();
     public List<DashboardItem> DisabledItems { get; set; } = new List<DashboardItem>();
-    public List<int> SortList { get; set;}
+    public List<string> SortList { get; set;}
     private bool ShowAddControlsDialog = false;
-    public int CurrentIndex { get; set; }
+    public string CurrentIndex { get; set; }
 
 
     protected override async Task OnInitializedAsync()
@@ -66,7 +66,7 @@
 
 
 
-    public async Task RemoveControlAsync(int id)
+    public async Task RemoveControlAsync(string id)
     {
         SortList.Remove(id);
         StateService.Claims.DashboardItemsOrder(StateService.User.Id,SortList);
@@ -98,22 +98,22 @@
         if (DisabledItems.Count==0) return;
         ShowAddControlsDialog = true;
     }
-    private async Task CloseDialog(int id)
+    private async Task CloseDialog(string id)
     {
         ShowAddControlsDialog = false;
-        if (id == 0) return;
+        if (id == "") return;
         SortList.Add(id);
         StateService.Claims.DashboardItemsOrder(StateService.User.Id,SortList);
         var account = new AccountController(ApiService, AccountService, StateService);
         var status = await account.SaveActiveClaimsAsync();
         await LoadDasboardItems();
     }
-       public async Task MoveControlAsync(int id)
+       public async Task MoveControlAsync(string id)
         {
             //_isOpen = false;
             var dragItemIndex = SortList.IndexOf(CurrentIndex);
             var dropItemIndex = SortList.IndexOf(id);
-            var newSortList = new List<int>();
+            var newSortList = new List<string>();
             for (int i = 0; i < SortList.Count; i++)
             {
                 if (dragItemIndex > dropItemIndex)

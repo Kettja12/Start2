@@ -65,7 +65,7 @@
         return false;
     }
 
-    protected void SelectNode(int id)
+    protected void SelectNode(string id)
     {
         if (ReservationNodeList == null
             || InfoMessage == null
@@ -89,7 +89,7 @@
             || R == null) return;
 
         isBusy = true;
-        bool insert = SelectedNode.Id == 0;
+        bool insert = SelectedNode.Id == "";
         var reservation = new ReservationController(ApiService, StateService);
         var selectedNode = await reservation
             .SaveReservationNodeAsync(SelectedNode);

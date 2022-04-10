@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NUlid;
 using Start2.Shared.Model.Dashboard;
 
 namespace Start2.DBContext;
@@ -11,8 +12,16 @@ public partial class StartContext
     }
     public async Task<DashboardItem> SaveDashboardItemAsync(DashboardItem dashboardItem)
     {
-        Entry(dashboardItem).State = dashboardItem.Id == 0 
-            ? EntityState.Added : EntityState.Modified;
+        if (dashboardItem.Id == "")
+        {
+            dashboardItem.Id = Ulid.NewUlid().ToString();
+            Entry(dashboardItem).State = EntityState.Added; 
+        }
+        else
+        {
+            Entry(dashboardItem).State = EntityState.Modified;
+        }
+
         await SaveChangesAsync();
         return dashboardItem;
 

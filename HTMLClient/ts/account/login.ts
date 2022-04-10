@@ -7,10 +7,10 @@ let translations = {
 }
 document.addEventListener("DOMContentLoaded", () => {
 
-    let c = document.getElementById("translations");
+    let c = <HTMLElement> document.getElementById("translations");
     translations = JSON.parse(c.innerHTML);
 
-    document.getElementById("login").addEventListener("click", async () => {
+    (document.getElementById("login") as HTMLElement).addEventListener("click", async () => {
         let data = {
             username: (document.getElementById('username') as HTMLInputElement).value,
             password: (document.getElementById('password') as HTMLInputElement).value
@@ -20,8 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
             showError(e, translate(translations, 'Username or password missing.'));
             return;
         }
-        stateservice = await login(data);
-        if (stateservice !== null) {
+        let res = await login(data);
+        if (res !== null) {
+            stateservice = res;
             localStorage.setItem('stateservice', JSON.stringify(stateservice));
             window.location.href = '../';
             return;

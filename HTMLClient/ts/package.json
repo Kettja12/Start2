@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "@types/chart.js": "^2.9.35",
-    "moment": "^2.29.1"
+    "@types/chart.js": "^2.9.36",
+    "moment": "^2.29.2"
   },
   "devDependencies": {
-    "@types/node": "^17.0.21"
+    "@types/node": "^17.0.23"
   }
 }

@@ -7,7 +7,7 @@ function getMessage() {
 
 
 async function login(data):
-    Promise<stateserviceType> {
+    Promise<stateserviceType|null> {
     let response = await apiPost("Account/Login", data);
     if (response.status === "OK") {
         return <stateserviceType>response.data;
@@ -18,7 +18,7 @@ async function login(data):
 
 
 async function saveUser(user: userType):
-    Promise<userType> {
+    Promise<userType|null> {
     var response = await apiPost("account/saveuser", user);
     if (response.status === "OK") {
         return <userType>response.data;
@@ -31,7 +31,7 @@ async function savePassword(user: SavePasswordModel):
     Promise<string> {
     var response = await apiPost("account/savePassword", user);
     if (response.status === "OK") {
-        return <string>response.data;
+        return <string><unknown>response.data;
     }
     message = response.message;
     return response.message;
@@ -44,7 +44,8 @@ async function GetUsers(params: userSearchModelType):
         return <Array<userType>>response.data;
     }
     message = response.message;
-    return null;
+    let result: userType[]=[];
+    return result;
 }
 
 

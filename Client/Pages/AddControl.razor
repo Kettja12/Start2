@@ -19,7 +19,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" 
-                @onclick="()=>CloseDialog.InvokeAsync(0)">@R["Close"]</button>
+                @onclick="()=>CloseDialog.InvokeAsync()">@R["Close"]</button>
             </div>
         </div>
     </div>
@@ -29,7 +29,7 @@
 
 @code {
     [Parameter]
-    public EventCallback<int> CloseDialog { get; set; } = default!;
+    public EventCallback<string> CloseDialog { get; set; } = default!;
     [Parameter]
     public List<DashboardItem> DisabledItems { get; set; }
 

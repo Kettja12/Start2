@@ -4,10 +4,12 @@
     "outDir": "wwwroot/scripts",
     "noImplicitAny": false,
     "noEmitOnError": true,
-    "removeComments": false,
+    "removeComments": true,
     "sourceMap": true,
     "target": "ES2021",
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "strict": true
+
   },
   "exclude": [
     "wwwroot"

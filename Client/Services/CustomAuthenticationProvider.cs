@@ -29,13 +29,21 @@ public class CustomAuthenticationProvider : AuthenticationStateProvider
         await Task.FromResult(0);
         if (stateService.Token==null)
         {
-            var s= await localStorageService.GetItemAsync<StateService>("stateService");
-            if (s != null)
+            try
             {
-                stateService.Token = s.Token;
-                stateService.SessionExpires = s.SessionExpires;
-                stateService.User = s.User;
-                stateService.Claims = s.Claims;
+                var s = await localStorageService.GetItemAsync<StateService>("stateService");
+                if (s != null)
+                {
+                    stateService.Token = s.Token;
+                    stateService.SessionExpires = s.SessionExpires;
+                    stateService.User = s.User;
+                    stateService.Claims = s.Claims;
+                }
+
+            }
+            catch 
+            {
+                stateService.Token = null;
             }
         }
         if (stateService.Token == null

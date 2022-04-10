@@ -1,4 +1,4 @@
-﻿import { initDashboard } from "./dashboard/dashboard.js"
+﻿import { initDashboard,removeItem } from "./dashboard/dashboard.js"
 import { initUserInformation } from "./account/userinformation.js"
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -24,22 +24,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
     }
-    document.getElementById("showUser").addEventListener('click', async (e) => {
+    (document.getElementById("showUser") as HTMLElement).addEventListener('click', async (e) => {
         let content = document.getElementById('divUserInformation');
         if (content == null) {
             content = await loadControl('account/userinformation');
             initUserInformation(e)
         }
     });
-    document.getElementById("logout").addEventListener("click", () => {
+    (document.getElementById("logout") as HTMLElement).addEventListener("click", () => {
         localStorage.removeItem('stateservice');
         window.location.href = '/';
     });
-    document.getElementById("login").addEventListener("click", () => {
+    (document.getElementById("login") as HTMLElement).addEventListener("click", () => {
         localStorage.removeItem('stateservice');
         window.location.href = 'account/login.html';
     });
-    document.getElementById("homepage").addEventListener("click",
+    (document.getElementById("homepage") as HTMLElement).addEventListener("click",
         async () => {
             await loadpage('homepage');
 
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             toggleClassOff('dashboard', 'active');
             toggleClassOn('divDashboard', 'w3-hide');
         });
-    document.getElementById("dashboard").addEventListener("click",
+    (document.getElementById("dashboard") as HTMLElement).addEventListener("click",
         async () => {
             await loadpage('dashboard');
 

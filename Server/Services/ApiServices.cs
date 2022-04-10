@@ -15,30 +15,27 @@ namespace Start2.Server.Services
             PropertyNameCaseInsensitive = true
         };
 
-        public int UserId
+        public string UserId
         {
             get
             {
                 try
                 {
-                    if (httpContext == null) return 0;
-                    if (httpContext.User == null) return 0;
+                    if (httpContext == null) return "";
+                    if (httpContext.User == null) return "";
                     var id = httpContext.User.FindFirst("UserID");
-                    if (id == null) return 0;
-                    if (int.TryParse(id.Value, out int value))
-                    {
-                        return value;
-                    }
+                    if (id == null) return "";
+                    return id.Value;
                 }
                 catch (Exception e)
                 {
                     logger.LogError(e.StackTrace);
                 }
-                return 0;
+                return "";
             }
         }
 
-        public async Task<bool> CheckIsAdminAsync(int userId)
+        public async Task<bool> CheckIsAdminAsync(string userId)
         {
             var claims = await db.GetClaimsByUserIdAsync(userId);
             if (claims == null) return false;

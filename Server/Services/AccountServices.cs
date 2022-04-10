@@ -6,8 +6,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
-using Claim = Start2.Shared.Model.Account.Claim;
 
 namespace Start2.Server.Services;
 public class AccountServices : ApiServices
@@ -101,7 +99,7 @@ public class AccountServices : ApiServices
 
             User? exitingUser = await db.GetUserByUsernameAsync(
                 postParams.Username);
-            if (postParams.Id == 0)
+            if (postParams.Id == "")
             {
                 if (exitingUser != null)
                 {
@@ -179,11 +177,11 @@ public class AccountServices : ApiServices
         }
         return Results.Conflict("Password save failed.");
     }
-    public async Task<IResult> GetClaimsAsync(int userId)
+    public async Task<IResult> GetClaimsAsync(string userId)
     {
         try
         {
-            List<Claim>? claims = await db.GetClaimsByUserIdAsync(userId);
+            List<Shared.Model.Account.Claim>? claims = await db.GetClaimsByUserIdAsync(userId);
             return Results.Ok(claims);
         }
         catch (Exception e)
@@ -192,16 +190,16 @@ public class AccountServices : ApiServices
         }
         return Results.Conflict("Claims search failed.");
     }
-    public async Task<IResult> SaveClaimAsync(Claim postParams)
+    public async Task<IResult> SaveClaimAsync(Shared.Model.Account.Claim postParams)
     {
         try
         {
-            if (postParams.UserId == 0)
+            if (postParams.UserId == "")
                 return InvalidParameters();
             bool isAdmin = await CheckIsAdminAsync(UserId);
             if (isAdmin == false)
                 return AccessDenied();
-            Claim? claim = await db.SaveClaimAsync(postParams);
+            var claim = await db.SaveClaimAsync(postParams);
             return Results.Ok(claim);
         }
         catch (Exception e)
@@ -210,13 +208,13 @@ public class AccountServices : ApiServices
         }
         return Results.Conflict("Claim save failed.");
     }
-    private string CreateJWTToken(int UserId)
+    private string CreateJWTToken(string UserId)
     {
         string? JWTPassword = configuration["Appsettings:JWTPassword"];
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new System.Security.Claims.Claim[] {
-                new System.Security.Claims.Claim("UserID", UserId.ToString())
+                new System.Security.Claims.Claim("UserID", UserId)
             }),
             Expires = DateTime.UtcNow.AddDays(1),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(

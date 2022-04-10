@@ -53,7 +53,7 @@
         <div class="mb-3">
             <label class="form-label">@R["Username"]</label>
             <input type="text" class="form-control"
-                   disabled=@(SelectedUser.Id > 0)
+                   disabled=@(SelectedUser.Id != "")
                    @bind="SelectedUser.Username">
         </div>
         <div class="mb-3">
@@ -126,7 +126,7 @@
         isBusy = false;
 
     }
-    protected void SelectUser(int id)
+    protected void SelectUser(string id)
     {
         if (UserListItems == null
             || InfoMessage == null
@@ -151,7 +151,7 @@
             || R == null) return;
 
         isBusy = true;
-        bool insert = SelectedUser.Id == 0;
+        bool insert = SelectedUser.Id == "";
         var account = new AccountController(ApiService, AccountService, StateService);
         var selectedUser = await account
             .SaveUserAsync(Password, PasswordVerification, SelectedUser);

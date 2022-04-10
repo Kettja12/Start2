@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NUlid;
 using Start2.Shared.Model.Reservation;
 
 namespace Start2.DBContext
@@ -23,9 +24,17 @@ namespace Start2.DBContext
             if (node != null)
             {
                 Entry(node).State = EntityState.Detached;
+                if (node.Id == "")
+                {
+                    node.Id = Ulid.NewUlid().ToString();
+                    Entry(node).State = EntityState.Added; 
+                }
+                else
+                {
+                    Entry(node).State = EntityState.Modified;
+                }
+                await SaveChangesAsync();
             }
-            Entry(node).State = node.Id == 0 ? EntityState.Added : EntityState.Modified;
-            await SaveChangesAsync();
             return node;
         }
 
@@ -34,10 +43,17 @@ namespace Start2.DBContext
 
             if (node != null)
             {
-                Entry(node).State = EntityState.Detached;
+                if (node.Id == "")
+                {
+                    node.Id = Ulid.NewUlid().ToString();
+                    Entry(node).State = EntityState.Added;
+                }
+                else
+                {
+                    Entry(node).State = EntityState.Modified;
+                }
+                await SaveChangesAsync();
             }
-            Entry(node).State = node.Id == 0 ? EntityState.Added : EntityState.Modified;
-            await SaveChangesAsync();
             return node;
         }
 

@@ -1,4 +1,4 @@
-import { getDashboardItems, saveDashboardItem, getMessage  } from "./dashboardapi.js"
+import { getDashboardItems, saveDashboardItem, getMessage } from "./dashboardapi.js"
 let translations = {
     'DashboardItem save failed.': 'DashboardItem save failed.',
     'DashboardItem save success.': 'DashboardItem save success.'
@@ -6,13 +6,13 @@ let translations = {
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-    let c = document.getElementById("translations");
+    let c = <HTMLElement> document.getElementById("translations");
     translations = JSON.parse(c.innerHTML);
 
     if (stateservice == undefined) {
         window.location.href = '/';
     }
-    document.getElementById("savecontrol").
+    (<HTMLElement>document.getElementById("savecontrol")).
         addEventListener("click", () => savecontrol(), false);
     await loadDasboardControls();
 });
@@ -20,21 +20,22 @@ async function loadDasboardControls() {
     await search();
 };
 
-let controllist: dashboardItemType[];
+let controllist: dashboardItemType[] | null;
 let currentcontrol = -1;
 
 async function search() {
-    var ul = document.getElementById('dashboarditems');
+    var ul = <HTMLElement>document.getElementById('dashboarditems');
     ul.innerHTML = "";
     resetcontrol();
-    controllist = await  getDashboardItems();
+    controllist = await getDashboardItems();
     if (controllist != null) {
         await setControls();
     }
 }
 
-async function  setControls() {
-        var ul = document.getElementById('dashboarditems');
+async function setControls() {
+    var ul = <HTMLElement>document.getElementById('dashboarditems');
+    if (controllist != null) {
         controllist.forEach(function (control, index) {
             var li = document.createElement('li');
             var span = document.createElement('span');
@@ -42,29 +43,32 @@ async function  setControls() {
             span.appendChild(document.createTextNode(control.control));
             li.appendChild(span);
             li.setAttribute("index", index.toString());
-            li.addEventListener("click",(e)=>select(e), false);
+            li.addEventListener("click", (e) => select(e), false);
             ul.appendChild(li);
         });
+    }
 
 }
 function select(e) {
-        resetcontrol();
-        var i = e.currentTarget.getAttribute("index");
-        currentcontrol = i;
-        (document.getElementById('control') as HTMLInputElement).value = controllist[i].control;
-        (document.getElementById('userGroups') as HTMLInputElement).value = controllist[i].userGroups;
-        (document.getElementById('inuse') as HTMLInputElement).checked = controllist[i].inUse;
+    if (controllist == null) return;
+    resetcontrol();
+    var i = e.currentTarget.getAttribute("index");
+    currentcontrol = i;
+    (document.getElementById('control') as HTMLInputElement).value = controllist[i].control;
+    (document.getElementById('userGroups') as HTMLInputElement).value = controllist[i].userGroups;
+    (document.getElementById('inuse') as HTMLInputElement).checked = controllist[i].inUse;
 
-    }
-function  resetcontrol() {
-        (document.getElementById('control') as HTMLInputElement).value = "";
-        (document.getElementById('userGroups') as HTMLInputElement).value = "";
-        (document.getElementById('inuse') as HTMLInputElement).checked = false;
-    }
+}
+function resetcontrol() {
+    (document.getElementById('control') as HTMLInputElement).value = "";
+    (document.getElementById('userGroups') as HTMLInputElement).value = "";
+    (document.getElementById('inuse') as HTMLInputElement).checked = false;
+}
 
 
 async function savecontrol() {
-    let control: dashboardItemType = <dashboardItemType> controllist[currentcontrol]
+    if (controllist == null) return;
+    let control: dashboardItemType = <dashboardItemType>controllist[currentcontrol]
     control.inUse = (document.getElementById('inuse') as HTMLInputElement).checked;
     control.userGroups = (document.getElementById('userGroups') as HTMLInputElement).value;
     let e = document.getElementById('infomessage');

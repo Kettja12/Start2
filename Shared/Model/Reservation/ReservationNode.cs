@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Start2.Shared.Model.Reservation
+﻿namespace Start2.Shared.Model.Reservation;
+public class ReservationNode
 {
-    public class ReservationNode
-    {
-        public int Id { get; set; }
-        public int? ParentId { get; set; }
-        public string? Name { get; set; }
+    public string Id { get; set; } = null!;
+    public string? ParentId { get; set; }
+    public string? Name { get; set; }
+    public DateTime Modified { get; set; }
 
-    }
+
 }

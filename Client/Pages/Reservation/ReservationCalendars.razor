@@ -197,7 +197,7 @@
             || R == null) return null;
 
         isBusy = true;
-        bool insert = reservation.Id == 0;
+        bool insert = reservation.Id == "";
         var controller = new ReservationController(ApiService, StateService);
         reservation = await controller
             .SaveReservationAsync(reservation);

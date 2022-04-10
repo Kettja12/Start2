@@ -1,4 +1,5 @@
-﻿using Start2.Shared.Model.Account;
+﻿using NUlid;
+using Start2.Shared.Model.Account;
 
 namespace Start2.Shared;
 public static class Extensions
@@ -33,12 +34,13 @@ public static class Extensions
             if (claim == null) return false;
             return true;
         }
-        public static void SetAdmin(this List<Claim> claims,int userId)
+        public static void SetAdmin(this List<Claim> claims,string userId)
         {
         if (claims == null)
         {
             claims=new List<Claim>();
             claims.Add(new Claim() { 
+                Id = Ulid.NewUlid().ToString(),
                 UserId = userId, 
                 ClaimType = "UserGroups", 
                 ClaimValue = "Admin" });
@@ -51,6 +53,7 @@ public static class Extensions
         {
             claims.Add(new Claim()
             {
+                Id = Ulid.NewUlid().ToString(),
                 UserId = userId,
                 ClaimType = "UserGroups",
                 ClaimValue = "Admin"

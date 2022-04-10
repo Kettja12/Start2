@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NUlid;
 using Start2.Shared.Model.Account;
 
 namespace Start2.DBContext;
 
 public partial class StartContext
 {
-    public async Task<User?> GetUserByIdAsync(int id)
+    public async Task<User?> GetUserByIdAsync(string id)
     {
         User? user = await Users
             .Include(c => c.Claims)
@@ -42,33 +43,48 @@ public partial class StartContext
         if (existingUser != null)
         {
             Entry(existingUser).State = EntityState.Detached;
+            Entry(user).State = EntityState.Modified;
         }
-        Entry(user).State = user.Id == 0 ? EntityState.Added : EntityState.Modified;
+        else
+        {
+            Entry(user).State = EntityState.Added;
+            if (user.Id == "")
+            {
+                user.Id = Ulid.NewUlid().ToString();
+            }
+        }
+        user.Modified = DateTime.Now;
         await SaveChangesAsync();
         return user;
     }
-    public async Task<LoginToken?> GetLoginTokenAsunc(int UserId)
+    public async Task<LoginToken?> GetLoginTokenAsunc(string UserId)
     {
         return await LoginTokens.FirstOrDefaultAsync(x => x.UserId == UserId);
     }
 
-    public async Task<LoginToken?> SaveLoginTokenAsync(int UserId, string token)
+    public async Task<LoginToken?> SaveLoginTokenAsync(string UserId, string token)
     {
         LoginToken? logintoken = await GetLoginTokenAsunc(UserId);
         if (logintoken == null)
         {
-            logintoken = new LoginToken() { UserId = UserId, Value = token };
+            logintoken = new LoginToken()
+            {
+                Id = Ulid.NewUlid().ToString(),
+                UserId = UserId,
+                Value = token
+            };
             LoginTokens.Add(logintoken);
         }
         else
         {
             logintoken.Value = token;
         }
+        logintoken.Modified = DateTime.Now;
         await SaveChangesAsync();
         return logintoken;
     }
 
-    public async Task<List<Claim>> GetClaimsByUserIdAsync(int userId)
+    public async Task<List<Claim>> GetClaimsByUserIdAsync(string userId)
     {
         if (Claims != null)
         {
@@ -81,25 +97,23 @@ public partial class StartContext
 
     public async Task<Claim> SaveClaimAsync(Claim claim)
     {
-        if (claim != null)
+        if (claim.Id != "")
         {
-            if (claim.Id > 0)
+            Claim? oldclaim = await Claims.FirstOrDefaultAsync(x => x.Id == claim.Id);
+            if (oldclaim! != null)
             {
-                Claim? oldclaim = await Claims.FirstOrDefaultAsync(x => x.Id == claim.Id);
-                if (oldclaim! != null)
-                {
-                    oldclaim.ClaimValue = claim.ClaimValue;
-                }
+                oldclaim.ClaimValue = claim.ClaimValue;
             }
-            else
-            {
-                await AddAsync(claim);
-            }
-
-            await SaveChangesAsync();
-            return claim;
         }
-        return new Claim();
+        else
+        {
+            claim.Id = Ulid.NewUlid().ToString();
+            await AddAsync(claim);
+        }
+
+        claim.Modified = DateTime.Now;
+        await SaveChangesAsync();
+        return claim;
     }
 
 }

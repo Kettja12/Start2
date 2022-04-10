@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32317.152
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Start3DB", "Start3DB.sqlproj", "{A6ABE4E2-3CBB-4051-873F-BEF8018E16F2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A6ABE4E2-3CBB-4051-873F-BEF8018E16F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6ABE4E2-3CBB-4051-873F-BEF8018E16F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6ABE4E2-3CBB-4051-873F-BEF8018E16F2}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{A6ABE4E2-3CBB-4051-873F-BEF8018E16F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6ABE4E2-3CBB-4051-873F-BEF8018E16F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6ABE4E2-3CBB-4051-873F-BEF8018E16F2}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1510C078-3F63-41BE-8777-00721A5AFDD9}
+	EndGlobalSection
+EndGlobal
